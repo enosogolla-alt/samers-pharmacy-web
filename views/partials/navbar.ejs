@@ -1,0 +1,654 @@
+<style>
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .marquee-track {
+    animation: marquee-scroll 22s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+</style>
+
+<div
+  x-data="{
+    mobileMenuOpen: false,
+    categoryOpen: false,
+    scrolled: false,
+    cartCount: 3,
+    transparentNav: <%= typeof transparentNav !== 'undefined' && transparentNav ? 'true' : 'false' %>
+  }"
+  x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 40 })"
+  class="sticky top-0 z-50"
+>
+  <!-- Moving offer strip -->
+  <div class="bg-ink-900 text-white overflow-hidden whitespace-nowrap py-2">
+    <div class="marquee-track inline-flex gap-16 text-sm font-medium">
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-mint-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M20 12a8 8 0 11-16 0 8 8 0 0116 0zM9 12l2 2 4-4"
+          />
+        </svg>
+        Free delivery on orders above KSh 2,500
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-gold-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
+        </svg>
+        New: Home lab sample collection now available
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-mint-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"
+          />
+        </svg>
+        10% off your first prescription order
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-gold-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+          />
+        </svg>
+        Need help? Call us: +254 714 758 335
+      </span>
+      <!-- duplicate set so the loop is seamless -->
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-mint-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M20 12a8 8 0 11-16 0 8 8 0 0116 0zM9 12l2 2 4-4"
+          />
+        </svg>
+        Free delivery on orders above KSh 2,500
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-gold-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
+        </svg>
+        New: Home lab sample collection now available
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-mint-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"
+          />
+        </svg>
+        10% off your first prescription order
+      </span>
+      <span class="flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-gold-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+          />
+        </svg>
+        Need help? Call us: +254 714 758 335
+      </span>
+    </div>
+  </div>
+
+  <!-- Main header row -->
+  <header
+    :class="(!transparentNav || scrolled) ? 'bg-white shadow-sm' : 'bg-transparent'"
+    class="transition-colors duration-300"
+  >
+    <div
+      class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-4 md:gap-8"
+    >
+      <!-- Logo -->
+      <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
+        <span
+          class="font-display font-semibold text-xl transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'text-forest-700' : 'text-white'"
+          >Samers Pharmacy</span
+        >
+      </a>
+
+      <!-- Search (desktop) -->
+      <div class="hidden md:flex flex-1 max-w-xl">
+        <div
+          class="flex w-full rounded-capsule border border-mint-200 bg-mint-50 overflow-hidden focus-within:ring-2 focus-within:ring-forest-700/30"
+        >
+          <input
+            type="text"
+            placeholder="Search medicines, tests, health products…"
+            class="flex-1 bg-transparent px-5 py-2.5 text-sm text-ink-900 placeholder:text-ink-900/40 focus:outline-none"
+          />
+          <button
+            class="px-5 bg-forest-700 text-white text-sm font-medium hover:bg-ink-900 transition-colors"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-2 md:gap-5 ml-auto">
+        <a
+          href="#"
+          class="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-capsule border transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'border-mint-200 text-ink-900 hover:bg-mint-50' : 'border-white/40 text-white hover:bg-white/10'"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 16v-6m0 0l-2.5 2.5M12 10l2.5 2.5"
+            />
+          </svg>
+          Upload Prescription
+        </a>
+
+        <a
+          href="#"
+          class="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-capsule border transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'border-mint-200 text-ink-900 hover:bg-mint-50' : 'border-white/40 text-white hover:bg-white/10'"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          Consult an Expert
+        </a>
+
+        <!-- Cart -->
+        <button
+          class="relative p-2 transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'text-ink-900' : 'text-white'"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 3h1.5l.9 4.5m0 0L6.6 15.6a1.5 1.5 0 001.48 1.4h9.35a1.5 1.5 0 001.48-1.24l1.13-6.26H4.65M7.5 19.5a1 1 0 100 2 1 1 0 000-2zm10 0a1 1 0 100 2 1 1 0 000-2z"
+            />
+          </svg>
+          <span
+            x-show="cartCount > 0"
+            x-text="cartCount"
+            x-cloak
+            class="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 rounded-full bg-coral-500 text-white text-[10px] font-bold flex items-center justify-center"
+          ></span>
+        </button>
+
+        <a
+          href="#"
+          class="hidden md:inline-flex px-5 py-2 rounded-capsule bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors"
+        >
+          Sign In
+        </a>
+
+        <!-- Hamburger (mobile) -->
+        <button
+          @click="mobileMenuOpen = true"
+          class="md:hidden p-2 transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'text-ink-900' : 'text-white'"
+          aria-label="Open menu"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Icon nav row (desktop) -->
+    <div
+      class="hidden md:block border-t transition-colors duration-300"
+      :class="(!transparentNav || scrolled) ? 'border-mint-200 bg-white' : 'border-white/20 bg-transparent'"
+    >
+      <div class="max-w-7xl mx-auto px-6">
+        <ul
+          class="flex items-center gap-7 text-sm font-medium transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'text-ink-900/80' : 'text-white/90'"
+        >
+          <li
+            class="relative"
+            x-data="{ open: false }"
+            @mouseenter="open = true"
+            @mouseleave="open = false"
+          >
+            <button
+              class="flex items-center gap-1.5 py-3.5 hover:text-forest-700"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 6h6v6H4V6zm0 8h6v6H4v-6zm10-8h6v6h-6V6zm0 8h6v6h-6v-6z"
+                />
+              </svg>
+              Shop by Category
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              x-show="open"
+              x-cloak
+              x-transition.opacity
+              class="absolute left-0 top-full w-64 bg-white rounded-2xl shadow-lg border border-mint-200 py-2 z-30"
+            >
+              <a
+                href="#"
+                class="block px-5 py-2.5 text-ink-900 hover:bg-mint-50 hover:text-forest-700"
+                >Medicines &amp; Prescriptions</a
+              >
+              <a
+                href="#"
+                class="block px-5 py-2.5 text-ink-900 hover:bg-mint-50 hover:text-forest-700"
+                >Vitamins &amp; Supplements</a
+              >
+              <a
+                href="#"
+                class="block px-5 py-2.5 text-ink-900 hover:bg-mint-50 hover:text-forest-700"
+                >Skincare &amp; Beauty</a
+              >
+              <a
+                href="#"
+                class="block px-5 py-2.5 text-ink-900 hover:bg-mint-50 hover:text-forest-700"
+                >Mother &amp; Baby</a
+              >
+              <a
+                href="#"
+                class="block px-5 py-2.5 text-ink-900 hover:bg-mint-50 hover:text-forest-700"
+                >Medical Devices</a
+              >
+            </div>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center gap-1.5 py-3.5 hover:text-forest-700"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Shop by Condition
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center gap-1.5 py-3.5 hover:text-forest-700"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A2 2 0 015 9.586V5a2 2 0 012-2z"
+                />
+              </svg>
+              Shop by Brand
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center gap-1.5 py-3.5 text-coral-500 font-semibold hover:text-coral-500/80"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+              Sales &amp; Offers
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center gap-1.5 py-3.5 hover:text-forest-700"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 12h4l2-7 4 14 2-7h6"
+                />
+              </svg>
+              Health Services
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center gap-1.5 py-3.5 hover:text-forest-700"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              Store Locator
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile drawer -->
+  <div
+    x-show="mobileMenuOpen"
+    x-cloak
+    x-transition:enter="transition-opacity ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="mobileMenuOpen = false"
+    class="fixed inset-0 bg-ink-900/50 z-50"
+  ></div>
+
+  <div
+    x-show="mobileMenuOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    @click.outside="mobileMenuOpen = false"
+    class="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-white z-50 flex flex-col"
+  >
+    <div
+      class="flex items-center justify-between px-5 py-4 border-b border-mint-200"
+    >
+      <span class="font-display font-semibold text-lg text-forest-700"
+        >Menu</span
+      >
+      <button
+        @click="mobileMenuOpen = false"
+        class="p-2 -mr-2 text-ink-900/60"
+        aria-label="Close menu"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 py-4 space-y-1">
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-ink-900 border-b border-mint-200"
+        >Shop by Category</a
+      >
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-ink-900 border-b border-mint-200"
+        >Shop by Condition</a
+      >
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-ink-900 border-b border-mint-200"
+        >Shop by Brand</a
+      >
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-coral-500 border-b border-mint-200"
+        >Sales &amp; Offers</a
+      >
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-ink-900 border-b border-mint-200"
+        >Health Services</a
+      >
+      <a
+        href="#"
+        class="block py-3.5 font-medium text-ink-900 border-b border-mint-200"
+        >Store Locator</a
+      >
+
+      <a
+        href="#"
+        class="flex items-center gap-2 py-3.5 font-medium text-forest-700 border-b border-mint-200"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 16v-6m0 0l-2.5 2.5M12 10l2.5 2.5"
+          />
+        </svg>
+        Upload Prescription
+      </a>
+
+      <a
+        href="#"
+        class="flex items-center gap-2 py-3.5 font-medium text-forest-700"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        Consult an Expert
+      </a>
+    </div>
+
+    <div class="px-5 py-4 border-t border-mint-200">
+      <a
+        href="#"
+        class="block text-center py-3 rounded-capsule bg-forest-700 text-white font-semibold text-sm"
+        >Sign In</a
+      >
+    </div>
+  </div>
+</div>

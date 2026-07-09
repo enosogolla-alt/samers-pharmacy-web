@@ -1,0 +1,423 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+
+<!-- ============ PROMO CAROUSEL ============ -->
+<section class="max-w-7xl mx-auto px-6 pt-8 pb-16" x-data="{ slide: 0, slides: 3 }" x-init="setInterval(() => slide = (slide + 1) % slides, 4000)">
+  <div class="relative rounded-3xl overflow-hidden h-64 md:h-80">
+
+    <div class="absolute inset-0 flex transition-transform duration-700 ease-in-out" :style="`transform: translateX(-${slide * 100}%)`">
+
+      <div class="min-w-full h-full bg-forest-700 flex items-center px-10 md:px-16">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-capsule bg-white/15 text-mint-400 text-xs font-semibold mb-3">Limited Offer</span>
+          <h3 class="font-display text-2xl md:text-3xl text-white font-semibold mb-2">Up to 15% off vitamins</h3>
+          <p class="text-white/70 text-sm md:text-base">Boost your immunity this season</p>
+        </div>
+      </div>
+
+      <div class="min-w-full h-full bg-ink-900 flex items-center px-10 md:px-16">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-capsule bg-gold-500/20 text-gold-500 text-xs font-semibold mb-3">New</span>
+          <h3 class="font-display text-2xl md:text-3xl text-white font-semibold mb-2">Home lab sample collection</h3>
+          <p class="text-white/70 text-sm md:text-base">Book a test, we come to you</p>
+        </div>
+      </div>
+
+      <div class="min-w-full h-full bg-mint-400 flex items-center px-10 md:px-16">
+        <div>
+          <span class="inline-block px-3 py-1 rounded-capsule bg-ink-900/10 text-ink-900 text-xs font-semibold mb-3">Free Delivery</span>
+          <h3 class="font-display text-2xl md:text-3xl text-ink-900 font-semibold mb-2">On orders above KSh 2,500</h3>
+          <p class="text-ink-900/70 text-sm md:text-base">Nationwide, fast and reliable</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+      <template x-for="i in slides">
+        <button @click="slide = i - 1" class="w-2 h-2 rounded-full transition-all" :class="slide === i - 1 ? 'bg-white w-6' : 'bg-white/40'"></button>
+      </template>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BRAND STATEMENT ============ -->
+<section class="max-w-4xl mx-auto px-6 py-14 text-center">
+<div class="flex items-center justify-center gap-2 mb-5">
+ <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
+  <span class="font-display font-semibold text-xl text-forest-700">Samers Pharmacy</span>
+</div>
+  <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900 leading-snug">
+    Trusted care, delivered with precision — because your health deserves nothing less than genuine medicine, real expertise, and a pharmacy that shows up.
+  </h2>
+</section>
+
+<!-- ============ TODAY'S OFFERS ============ -->
+<section class="max-w-7xl mx-auto px-6 py-4 pb-16">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Today's Offers</h2>
+      <p class="text-ink-900/60 mt-1">Genuine products, real savings</p>
+    </div>
+    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+      View All
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 items-stretch">
+    <% const offers = [
+      { name: 'Vitamin C 1000mg Tablets', price: 850, oldPrice: 1000, discount: '15% OFF' },
+      { name: 'Paracetamol 500mg (100s)', price: 320, oldPrice: 400, discount: '20% OFF' },
+      { name: 'Digital Thermometer', price: 950, oldPrice: 1200, discount: '21% OFF' },
+      { name: 'Multivitamin Syrup 200ml', price: 680, oldPrice: 800, discount: '15% OFF' },
+    ]; %>
+    <% offers.forEach(function(item) { %>
+      <div class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-md transition-shadow flex flex-col h-full">
+        <div class="relative rounded-xl h-44 mb-5 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <span class="absolute top-3 left-3 px-2.5 py-1 rounded-capsule bg-coral-500 text-white text-[10px] font-bold"><%= item.discount %></span>
+          <svg class="w-14 h-14 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+        </div>
+        <p class="text-sm font-medium text-ink-900 mb-2 leading-snug flex-1"><%= item.name %></p>
+        <div class="flex items-baseline gap-1.5 mb-3 flex-wrap">
+          <span class="text-gold-500 font-bold whitespace-nowrap">KSh <%= item.price %></span>
+          <span class="text-ink-900/40 text-xs line-through whitespace-nowrap">KSh <%= item.oldPrice %></span>
+        </div>
+        <button class="w-full py-2 rounded-capsule bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Add to Cart</button>
+      </div>
+    <% }); %>
+  </div>
+</section>
+
+<!-- ============ SHOP BY CATEGORY ============ -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Shop by Category</h2>
+      <p class="text-ink-900/60 mt-1">Browse our wide range of healthcare products</p>
+    </div>
+    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+      View All
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <% const categories = [
+      { name: 'Medicines', icon: 'M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z' },
+      { name: 'Vitamins & Supplements', icon: 'M12 8v8m-4-4h8m6 0a10 10 0 11-20 0 10 10 0 0120 0z' },
+      { name: 'Skincare & Beauty', icon: 'M12 4.5c3.5 0 6.5 3 6.5 7s-3 7-6.5 7-6.5-3-6.5-7 3-7 6.5-7z' },
+      { name: 'Mother & Baby', icon: 'M12 4a4 4 0 100 8 4 4 0 000-8zm-7 16a7 7 0 0114 0' },
+      { name: 'Medical Devices', icon: 'M9 3v2m6-2v2M4 8h16M5 8v11a2 2 0 002 2h10a2 2 0 002-2V8H5z' },
+      { name: 'Personal Care', icon: 'M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42' },
+    ]; %>
+    <% categories.forEach(function(cat) { %>
+      <a href="#" class="group bg-white border border-mint-200 rounded-2xl p-5 flex flex-col items-center text-center gap-3 hover:border-forest-700 hover:shadow-md transition-all">
+        <span class="w-12 h-12 rounded-full bg-mint-50 flex items-center justify-center group-hover:bg-forest-700 transition-colors">
+          <svg class="w-6 h-6 text-forest-700 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="<%= cat.icon %>"/></svg>
+        </span>
+        <span class="text-sm font-medium text-ink-900"><%= cat.name %></span>
+      </a>
+    <% }); %>
+  </div>
+</section>
+
+<!-- ============ HERO ============ -->
+<section class="bg-ink-900 relative overflow-hidden">
+  <div
+    class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center"
+  >
+    <div class="relative z-10">
+      <span
+        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-capsule bg-white/10 text-mint-400 text-xs font-semibold tracking-wide uppercase mb-6"
+      >
+        <svg
+          class="w-3.5 h-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        Licensed Pharmacy &middot; Kenya
+      </span>
+
+      <h1
+        class="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-white leading-tight mb-5"
+      >
+        Your health,<br />delivered with care.
+      </h1>
+
+      <p class="text-white/70 text-base md:text-lg mb-8 max-w-md">
+        Genuine medicines, diagnostic tests, and expert pharmacist support —
+        ordered online, delivered nationwide.
+      </p>
+
+      <div class="flex flex-wrap gap-4">
+        <a
+          href="#"
+          class="inline-flex items-center gap-2 px-6 py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-mint-400 hover:text-ink-900 transition-colors"
+        >
+          Shop Medicines
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
+          </svg>
+        </a>
+        <a
+          href="#"
+          class="inline-flex items-center gap-2 px-6 py-3.5 rounded-capsule border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors"
+        >
+          Upload Prescription
+        </a>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          class="bg-forest-700 rounded-3xl p-6 flex flex-col justify-between h-40"
+        >
+          <svg
+            class="w-7 h-7 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"
+            />
+          </svg>
+          <p class="text-white font-semibold text-sm">
+            Fast prescription approval
+          </p>
+        </div>
+        <div
+          class="bg-mint-400 rounded-3xl p-6 flex flex-col justify-between h-40 "
+        >
+          <svg
+            class="w-7 h-7 text-ink-900"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 12h4l2-7 4 14 2-7h6"
+            />
+          </svg>
+          <p class="text-ink-900 font-semibold text-sm">
+            Book lab tests online
+          </p>
+        </div>
+        <div
+          class="bg-white/10 rounded-3xl p-6 flex flex-col justify-between h-40 col-span-2"
+        >
+          <div class="flex items-center justify-between">
+            <svg
+              class="w-7 h-7 text-gold-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M20 12a8 8 0 11-16 0 8 8 0 0116 0zM9 12l2 2 4-4"
+              />
+            </svg>
+            <span
+              class="text-xs font-semibold px-3 py-1 rounded-capsule bg-gold-500 text-ink-900"
+              >Nationwide</span
+            >
+          </div>
+          <p class="text-white font-semibold text-sm">
+            Same-day delivery in Nairobi, next-day countrywide
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED PRODUCTS ============ -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Featured Products</h2>
+      <p class="text-ink-900/60 mt-1">Handpicked essentials, trusted by our customers</p>
+    </div>
+    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+      View All
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 snap-x snap-mandatory" style="scrollbar-width: none;">
+    <% const featured = [
+      { name: 'Blood Pressure Monitor', price: 3200, rating: 4.8 },
+      { name: 'Omega-3 Fish Oil 90 Caps', price: 1450, rating: 4.9 },
+      { name: 'CeraVe Hydrating Cleanser', price: 2360, rating: 4.7 },
+      { name: 'Glucometer Test Kit', price: 2800, rating: 4.6 },
+      { name: 'Probiotic Capsules 30s', price: 1900, rating: 4.8 },
+      { name: 'Baby Formula Stage 1', price: 2550, rating: 4.9 },
+    ]; %>
+    <% featured.forEach(function(item) { %>
+      <div class="min-w-[240px] snap-start bg-white border border-mint-200 rounded-2xl p-5 hover:shadow-lg transition-shadow">
+        <div class="relative rounded-xl h-40 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <svg class="w-12 h-12 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+        </div>
+        <div class="flex items-center gap-1 mb-1.5">
+          <svg class="w-3.5 h-3.5 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+          <span class="text-xs text-ink-900/60"><%= item.rating %></span>
+        </div>
+        <p class="text-sm font-medium text-ink-900 mb-3 leading-snug"><%= item.name %></p>
+        <div class="flex items-center justify-between">
+          <span class="text-forest-700 font-bold text-sm">KSh <%= item.price %></span>
+         <button class="px-4 py-2 rounded-capsule bg-forest-700 text-white text-xs font-semibold hover:bg-ink-900 transition-colors">
+  Add to Cart
+</button>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</section>
+
+<!-- ============ PRESCRIPTION UPLOAD ============ -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <div class="bg-mint-50 rounded-3xl p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center">
+
+    <div>
+      <span class="inline-block px-3 py-1 rounded-capsule bg-forest-700/10 text-forest-700 text-xs font-semibold mb-4">Easy &amp; Secure</span>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900 mb-4">Have a Prescription?</h2>
+      <p class="text-ink-900/70 mb-6 max-w-md">
+        Upload your doctor's prescription and let us handle the rest. We'll verify, prepare, and deliver your medication to your doorstep.
+      </p>
+
+      <ul class="space-y-3 mb-8">
+        <li class="flex items-center gap-3 text-sm text-ink-900">
+          <span class="w-5 h-5 rounded-full bg-forest-700/15 flex items-center justify-center">
+            <svg class="w-3 h-3 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </span>
+          Pharmacist Verification
+        </li>
+        <li class="flex items-center gap-3 text-sm text-ink-900">
+          <span class="w-5 h-5 rounded-full bg-forest-700/15 flex items-center justify-center">
+            <svg class="w-3 h-3 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </span>
+          Fast Delivery
+        </li>
+        <li class="flex items-center gap-3 text-sm text-ink-900">
+          <span class="w-5 h-5 rounded-full bg-forest-700/15 flex items-center justify-center">
+            <svg class="w-3 h-3 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </span>
+          Secure &amp; Confidential
+        </li>
+      </ul>
+
+      <button class="px-6 py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+        Upload Prescription Now
+      </button>
+    </div>
+
+    <div class="bg-white rounded-2xl border-2 border-dashed border-mint-200 h-64 flex flex-col items-center justify-center gap-3">
+      <span class="w-12 h-12 rounded-full bg-mint-50 flex items-center justify-center">
+        <svg class="w-6 h-6 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14"/></svg>
+      </span>
+      <p class="text-ink-900/60 text-sm">Drop your prescription here</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ CONSULTATION BANNER ============ -->
+<section class="max-w-7xl mx-auto px-6 pb-16">
+  <div class="bg-ink-900 rounded-3xl p-8 md:p-14 relative overflow-hidden">
+
+    <div class="relative z-10 max-w-2xl">
+      <span class="inline-block px-3 py-1 rounded-capsule bg-mint-400/15 text-mint-400 text-xs font-semibold mb-4">Expert Guidance</span>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-white mb-4">
+        Talk to a Health Expert — Online or In-Store
+      </h2>
+      <p class="text-white/70 mb-8 max-w-xl">
+        Get personalized guidance from licensed professionals on chronic and non-chronic conditions, mental wellbeing, skin health, nutrition, and your broader health goals.
+      </p>
+
+      <div class="flex flex-wrap gap-3 mb-9">
+        <% const topics = ['Chronic Conditions', 'Mental Health', 'Skin & Dermatology', 'Healthy Lifestyle', 'Nutrition', 'Health Goals']; %>
+        <% topics.forEach(function(t) { %>
+          <span class="px-4 py-1.5 rounded-capsule bg-white/10 text-white text-xs font-medium"><%= t %></span>
+        <% }); %>
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        <a href="#" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-capsule bg-mint-400 text-ink-900 font-semibold hover:bg-white transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Book Online Consultation
+        </a>
+        <a href="#" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-capsule border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Visit a Store Near You
+        </a>
+      </div>
+    </div>
+
+    <svg class="hidden md:block absolute -right-10 -bottom-10 w-64 h-64 text-white/5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-16 0 8 8 0 0116 0zM9 12l2 2 4-4"/></svg>
+  </div>
+</section>
+
+<!-- ============ LATEST ON THE BLOG ============ -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <div class="flex items-end justify-between mb-8">
+    <div>
+      <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Latest on the Blog</h2>
+      <p class="text-ink-900/60 mt-1">Health tips, wellness guides, and expert insights</p>
+    </div>
+    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+      View All
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <div class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 snap-x snap-mandatory" style="scrollbar-width: none;">
+    <% const posts = [
+      { title: 'Mid-Year Reset: 7 Simple Self-Care Tips to Recharge', excerpt: "Halfway through the year, small habits can make a big difference to how you feel." },
+      { title: 'Dry Skin vs. Dehydrated Skin — Why People Confuse Them', excerpt: 'Understanding the difference is the first step to treating either one correctly.' },
+      { title: 'Why Being There Through Every Moment Matters', excerpt: 'From routine check-ups to life\'s bigger decisions, consistent care changes outcomes.' },
+      { title: 'Managing Chronic Conditions Without Losing Yourself', excerpt: 'Practical, sustainable habits for living well alongside a long-term diagnosis.' },
+    ]; %>
+    <% posts.forEach(function(post) { %>
+      <a href="#" class="min-w-[280px] md:min-w-[320px] snap-start group">
+        <div class="rounded-2xl h-44 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #BFE8D6 0%, #E9F7F2 100%);"></div>
+        <h3 class="font-display text-lg font-semibold text-ink-900 mb-2 leading-snug group-hover:text-forest-700 transition-colors"><%= post.title %></h3>
+        <p class="text-sm text-ink-900/60 mb-3 leading-relaxed"><%= post.excerpt %></p>
+        <span class="inline-flex items-center gap-1 text-forest-700 text-sm font-semibold">
+          Read blog
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    <% }); %>
+  </div>
+</section>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>
