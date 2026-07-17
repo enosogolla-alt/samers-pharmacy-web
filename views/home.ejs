@@ -43,10 +43,11 @@
 
 <!-- ============ BRAND STATEMENT ============ -->
 <section class="max-w-4xl mx-auto px-6 py-14 text-center">
-<div class="flex items-center justify-center gap-2 mb-5">
- <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
-  <span class="font-display font-semibold text-xl text-forest-700">Samers Pharmacy</span>
-</div>
+  <div class="flex items-center justify-center gap-2 mb-5">
+    <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
+    <span class="font-display font-semibold text-xl text-forest-700">Samers Pharmacy</span>
+  </div>
+  <p class="text-gold-500 font-semibold tracking-wide uppercase text-sm mb-4">Quality Health Is Our Priority</p>
   <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900 leading-snug">
     Trusted care, delivered with precision — because your health deserves nothing less than genuine medicine, real expertise, and a pharmacy that shows up.
   </h2>
@@ -59,7 +60,7 @@
       <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Today's Offers</h2>
       <p class="text-ink-900/60 mt-1">Genuine products, real savings</p>
     </div>
-    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+    <a href="/products" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
       View All
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
     </a>
@@ -96,7 +97,7 @@
       <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Shop by Category</h2>
       <p class="text-ink-900/60 mt-1">Browse our wide range of healthcare products</p>
     </div>
-    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+    <a href="/products" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
       View All
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
     </a>
@@ -267,7 +268,7 @@
       <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Featured Products</h2>
       <p class="text-ink-900/60 mt-1">Handpicked essentials, trusted by our customers</p>
     </div>
-    <a href="#" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
+    <a href="/products" class="text-forest-700 font-semibold text-sm flex items-center gap-1 hover:text-ink-900">
       View All
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
     </a>
@@ -383,6 +384,31 @@
     </div>
 
     <svg class="hidden md:block absolute -right-10 -bottom-10 w-64 h-64 text-white/5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-16 0 8 8 0 0116 0zM9 12l2 2 4-4"/></svg>
+  </div>
+</section>
+
+<!-- ============ FIVE PILLARS ============ -->
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <div class="text-center mb-10">
+    <h2 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">What We Stand For</h2>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+<% const pillars = [
+  { name: 'Pharmacy', icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-1.519-3.144l-2.007 2.007m2.007-2.007L10.481 11.1M4.5 21h15a1.5 1.5 0 001.5-1.5V15a1.5 1.5 0 00-1.5-1.5h-15A1.5 1.5 0 003 15v4.5A1.5 1.5 0 004.5 21z', color: 'forest-700' },
+  { name: 'Health Services', icon: 'M12 6v12M6 12h12M12 3a9 9 0 100 18 9 9 0 000-18z', color: 'gold-500' },
+  { name: 'Wellness', icon: 'M11 20A7 7 0 019.8 6.1C15.5 5 20 4 20 4c0 5.5-1.5 15-9 16z', color: 'forest-700' },
+  { name: 'Care', icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0112.749 0zM15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z', color: 'gold-500' },
+  { name: 'Trust', icon: 'M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.04 8.582-7.5 9.75C9.04 20.582 6 16.556 6 12V6.5l6-3 6 3V12z', color: 'forest-700' },
+]; %>
+    <% pillars.forEach(function(p) { %>
+      <div class="flex flex-col items-center text-center gap-3">
+        <span class="w-14 h-14 rounded-full bg-<%= p.color %>/10 flex items-center justify-center">
+          <svg class="w-7 h-7 text-<%= p.color %>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="<%= p.icon %>"/></svg>
+        </span>
+        <span class="font-semibold text-ink-900 text-sm"><%= p.name %></span>
+      </div>
+    <% }); %>
   </div>
 </section>
 

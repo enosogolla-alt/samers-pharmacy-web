@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div x-data="{ view: 'grid', activeCategory: 'All Products' }">
+
+  <!-- Breadcrumb + Title -->
+  <section class="max-w-7xl mx-auto px-6 pt-8">
+    <nav class="text-sm text-ink-900/50 mb-4">
+      <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span> <span class="text-ink-900">All Products</span>
+    </nav>
+    <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">All Products</h1>
+    <p class="text-ink-900/60 max-w-xl">Browse our complete range of medications, health supplements, and wellness products.</p>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-[240px_1fr] gap-10">
+
+    <!-- Sidebar -->
+    <aside>
+      <h3 class="font-semibold text-ink-900 mb-3">Search</h3>
+      <div class="relative mb-8">
+        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-900/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mint-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+      </div>
+
+      <h3 class="font-semibold text-ink-900 mb-3">Categories</h3>
+      <ul class="space-y-1">
+        <% const cats = ['All Products','Medicines','Vitamins & Supplements','Skincare & Beauty','Mother & Baby','Medical Devices','Personal Care']; %>
+        <% cats.forEach(function(c) { %>
+          <li>
+            <button @click="activeCategory = '<%= c %>'"
+              class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors"
+              :class="activeCategory === '<%= c %>' ? 'bg-forest-700 text-white font-semibold' : 'text-ink-900/70 hover:bg-mint-50'">
+              <%= c %>
+            </button>
+          </li>
+        <% }); %>
+      </ul>
+    </aside>
+
+    <!-- Product Grid/List -->
+    <div>
+      <% const products = [
+        { name: 'Duromine 15mg Capsules 30\'s', category: 'Medicines', price: 5700, oldPrice: 6437, discount: '-11%', desc: 'Prescribed for short-term management of obesity, alongside exercise and lifestyle changes.' },
+        { name: 'Vitamin C 1000mg Tablets', category: 'Vitamins & Supplements', price: 850, oldPrice: 1000, discount: '-15%', desc: 'Supports immune health with a high-strength daily dose of Vitamin C.' },
+        { name: 'CeraVe Hydrating Cleanser 236ml', category: 'Skincare & Beauty', price: 2360, oldPrice: 2360, discount: null, desc: 'Gentle, non-foaming cleanser formulated with ceramides and hyaluronic acid.' },
+        { name: 'Nestle NAN1 Optipro Infant Formula', category: 'Mother & Baby', price: 1960, oldPrice: 1960, discount: null, desc: 'Starter infant formula designed for babies 0-6 months.' },
+        { name: 'Digital Thermometer', category: 'Medical Devices', price: 950, oldPrice: 1200, discount: '-21%', desc: 'Fast, accurate digital temperature readings for the whole family.' },
+        { name: 'Blood Pressure Monitor', category: 'Medical Devices', price: 3200, oldPrice: 3200, discount: null, desc: 'Automatic upper-arm monitor with large, easy-to-read display.' },
+      ]; %>
+
+      <div class="flex items-center justify-between mb-6">
+        <p class="text-sm text-ink-900/60"><%= products.length %> products</p>
+        <div class="flex items-center gap-3">
+          <select class="text-sm border border-mint-200 rounded-xl px-3 py-2 focus:outline-none">
+            <option>Featured</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Name: A-Z</option>
+          </select>
+          <div class="flex border border-mint-200 rounded-xl overflow-hidden">
+            <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h6v6H4V6zm0 8h6v6H4v-6zm10-8h6v6h-6V6zm0 8h6v6h-6v-6z"/></svg>
+            </button>
+            <button @click="view = 'list'" :class="view === 'list' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid view -->
+      <div x-show="view === 'grid'" class="grid grid-cols-2 lg:grid-cols-3 gap-5">
+        <% products.forEach(function(p) { %>
+          <a href="/product" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex flex-col">
+            <div class="relative rounded-xl h-40 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+              <% if (p.discount) { %><span class="absolute top-3 left-3 px-2.5 py-1 rounded-capsule bg-coral-500 text-white text-[10px] font-bold"><%= p.discount %></span><% } %>
+              <svg class="w-12 h-12 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+            </div>
+            <span class="text-xs text-forest-700 font-medium mb-1"><%= p.category %></span>
+            <p class="text-sm font-medium text-ink-900 mb-3 leading-snug flex-1"><%= p.name %></p>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-gold-500 font-bold">KSh <%= p.price %></span>
+              <% if (p.discount) { %><span class="text-ink-900/40 text-xs line-through">KSh <%= p.oldPrice %></span><% } %>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+
+      <!-- List view -->
+      <div x-show="view === 'list'" x-cloak class="space-y-4">
+        <% products.forEach(function(p) { %>
+          <a href="/product" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex gap-5">
+            <div class="relative rounded-xl w-28 h-28 shrink-0 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+              <% if (p.discount) { %><span class="absolute top-2 left-2 px-2 py-0.5 rounded-capsule bg-coral-500 text-white text-[9px] font-bold"><%= p.discount %></span><% } %>
+              <svg class="w-9 h-9 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+            </div>
+            <div class="flex-1">
+              <span class="text-xs text-forest-700 font-medium"><%= p.category %></span>
+              <p class="font-medium text-ink-900 mb-1"><%= p.name %></p>
+              <p class="text-sm text-ink-900/60 mb-2 line-clamp-2"><%= p.desc %></p>
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-gold-500 font-bold"><%= p.price %></span>
+                <% if (p.discount) { %><span class="text-ink-900/40 text-xs line-through">KSh <%= p.oldPrice %></span><% } %>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>

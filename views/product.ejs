@@ -1,0 +1,151 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-6">
+    <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span>
+    <a href="/products" class="hover:text-forest-700">Products</a> <span class="mx-1">&rsaquo;</span>
+    <span class="text-ink-900">Duromine 15mg Capsules 30's</span>
+  </nav>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 pb-16 grid md:grid-cols-2 gap-12">
+
+  <!-- Product Image -->
+  <div class="relative rounded-3xl h-96 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+    <span class="absolute top-5 left-5 px-3 py-1.5 rounded-capsule bg-coral-500 text-white text-xs font-bold">-11% OFF</span>
+    <div class="absolute top-5 right-5 flex flex-col gap-2">
+      <button class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-ink-900/60 hover:text-coral-500">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+      </button>
+      <button class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-ink-900/60 hover:text-forest-700">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342a3 3 0 100-2.684m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+      </button>
+    </div>
+    <svg class="w-28 h-28 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+  </div>
+
+  <!-- Product Info -->
+  <div x-data="{ qty: 1 }">
+    <span class="text-forest-700 font-semibold text-sm">Medicines &middot; Generic</span>
+    <h1 class="font-display text-3xl font-semibold text-ink-900 mt-2 mb-3">Duromine 15mg Capsules 30's</h1>
+    <p class="text-ink-900/60 mb-5 leading-relaxed">
+      It is prescribed for the short-term management of obesity, alongside exercise, behavioral modifications, and caloric restriction.
+    </p>
+
+    <div class="flex items-baseline gap-3 mb-4">
+      <span class="text-gold-500 font-bold text-3xl">KSh 5,700</span>
+      <span class="text-ink-900/40 text-lg line-through">KSh 6,437</span>
+    </div>
+
+    <div class="flex items-center gap-2 mb-6">
+      <div class="flex text-gold-500">
+        <% for(let i=0;i<4;i++){ %><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg><% } %>
+        <svg class="w-4 h-4 text-mint-200" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+      </div>
+      <span class="text-sm text-ink-900/50">4.2 (128 reviews)</span>
+      <span class="text-sm text-forest-700 font-medium ml-2">&middot; In Stock 
+        
+      </span>
+    </div>
+
+    <div class="bg-mint-50 rounded-2xl p-5 mb-6 grid grid-cols-2 gap-4 text-sm">
+      <div><span class="text-ink-900/50 block mb-0.5">Dosage Form</span><span class="font-medium text-ink-900">Tablet</span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Strength</span><span class="font-medium text-ink-900">15mg</span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Pack Size</span><span class="font-medium text-ink-900">Pack of 30</span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Active Ingredient</span><span class="font-medium text-ink-900">Phentermine</span></div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="flex items-center border border-mint-200 rounded-capsule">
+        <button @click="qty = Math.max(1, qty - 1)" class="w-10 h-10 flex items-center justify-center text-ink-900/60 hover:text-forest-700">&minus;</button>
+        <span x-text="qty" class="w-8 text-center font-medium"></span>
+        <button @click="qty++" class="w-10 h-10 flex items-center justify-center text-ink-900/60 hover:text-forest-700">+</button>
+      </div>
+      <button class="flex-1 py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l.9 4.5m0 0L6.6 15.6a1.5 1.5 0 001.48 1.4h9.35a1.5 1.5 0 001.48-1.24l1.13-6.26H4.65M7.5 19.5a1 1 0 100 2 1 1 0 000-2zm10 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+        Add to Cart
+      </button>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-mint-200">
+      <div class="flex flex-col items-center text-center gap-2">
+        <span class="w-10 h-10 rounded-full bg-forest-700/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.04 8.582-7.5 9.75C9.04 20.582 6 16.556 6 12V6.5l6-3 6 3V12z"/></svg>
+        </span>
+        <span class="text-xs font-medium text-ink-900">Genuine Products</span>
+      </div>
+      <div class="flex flex-col items-center text-center gap-2">
+        <span class="w-10 h-10 rounded-full bg-forest-700/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+        </span>
+        <span class="text-xs font-medium text-ink-900">Fast Delivery</span>
+      </div>
+      <div class="flex flex-col items-center text-center gap-2">
+        <span class="w-10 h-10 rounded-full bg-forest-700/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 17.25h.007v.008H12v-.008z"/></svg>
+        </span>
+        <span class="text-xs font-medium text-ink-900">24/7 Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT TABS ============ -->
+<section class="max-w-7xl mx-auto px-6 pb-16" x-data="{ tab: 'description' }">
+  <div class="flex gap-8 border-b border-mint-200 mb-6">
+    <button @click="tab = 'description'" class="pb-3.5 text-sm font-semibold border-b-2 transition-colors"
+      :class="tab === 'description' ? 'border-forest-700 text-forest-700' : 'border-transparent text-ink-900/50'">
+      Description
+    </button>
+    <button @click="tab = 'dosage'" class="pb-3.5 text-sm font-semibold border-b-2 transition-colors"
+      :class="tab === 'dosage' ? 'border-forest-700 text-forest-700' : 'border-transparent text-ink-900/50'">
+      Dosage &amp; Usage
+    </button>
+    <button @click="tab = 'warnings'" class="pb-3.5 text-sm font-semibold border-b-2 transition-colors"
+      :class="tab === 'warnings' ? 'border-forest-700 text-forest-700' : 'border-transparent text-ink-900/50'">
+      Side Effects &amp; Warnings
+    </button>
+  </div>
+
+  <div x-show="tab === 'description'" class="text-ink-900/70 leading-relaxed max-w-3xl">
+    <p class="mb-4">Duromine 15 mg Capsules contain Phentermine, a sympathomimetic amine used as an appetite suppressant. It is prescribed for the short-term management of obesity, alongside exercise, behavioral modifications, and caloric restriction.</p>
+    <h4 class="font-semibold text-ink-900 mb-2">Storage Conditions</h4>
+    <p>Store below 25&deg;C in a dry place. Keep out of reach of children.</p>
+  </div>
+
+  <div x-show="tab === 'dosage'" x-cloak class="text-ink-900/70 leading-relaxed max-w-3xl">
+    <p class="mb-4">Take one capsule daily in the morning, before breakfast or 1&ndash;2 hours after breakfast, as directed by your prescribing physician.</p>
+    <p>Do not take later in the day as it may cause difficulty sleeping. Do not exceed the prescribed dose.</p>
+  </div>
+
+  <div x-show="tab === 'warnings'" x-cloak class="text-ink-900/70 leading-relaxed max-w-3xl">
+    <p class="mb-4">Common side effects may include dry mouth, insomnia, and increased heart rate. Consult your doctor if symptoms persist or worsen.</p>
+    <p class="font-medium text-coral-500">Not recommended for individuals with heart conditions, high blood pressure, or during pregnancy. Always consult a licensed pharmacist before use.</p>
+  </div>
+</section>
+
+<!-- ============ SIMILAR PRODUCTS ============ -->
+<section class="max-w-7xl mx-auto px-6 pb-16">
+  <h2 class="font-display text-2xl font-semibold text-ink-900 mb-6">Similar Products</h2>
+  <div class="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 snap-x snap-mandatory" style="scrollbar-width: none;">
+    <% const similar = [
+      { name: 'Active Girl Capsules 30\'s', price: 790 },
+      { name: 'Stilnox 10mg Tablets 14\'s', price: 1225 },
+      { name: 'Cosflora 2gms Sachets 10\'s', price: 836 },
+      { name: 'Advancis Passival Sleep Tablets', price: 978 },
+    ]; %>
+    <% similar.forEach(function(item) { %>
+      <a href="/product" class="min-w-[220px] snap-start bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
+        <div class="rounded-xl h-32 mb-3 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <svg class="w-9 h-9 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+        </div>
+        <p class="text-sm font-medium text-ink-900 mb-2 leading-snug"><%= item.name %></p>
+        <span class="text-gold-500 font-bold text-sm">KSh <%= item.price %></span>
+      </a>
+    <% }); %>
+  </div>
+</section> 
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>
