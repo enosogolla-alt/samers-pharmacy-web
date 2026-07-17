@@ -1,7 +1,6 @@
 <!-- ============ MOBILE BOTTOM TAB BAR ============ -->
 <nav
   class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-mint-200 shadow-[0_-2px_12px_rgba(10,18,16,0.08)]"
-  x-data="{ cartCount: 3 }"
 >
   <div class="grid grid-cols-5">
     <a
@@ -45,7 +44,7 @@
     </a>
 
     <a
-      href="#"
+      href="/cart"
       class="relative flex flex-col items-center justify-center gap-1 py-2.5 text-ink-900/70"
     >
       <svg
@@ -62,16 +61,15 @@
         />
       </svg>
       <span
-        x-show="cartCount > 0"
-        x-text="cartCount"
-        x-cloak
-        class="absolute top-1 right-6 w-4 h-4 rounded-full bg-coral-500 text-white text-[9px] font-bold flex items-center justify-center"
+        data-cart-badge
+        class="absolute top-1 right-6 w-4 h-4 rounded-full bg-coral-500 text-white text-[9px] font-bold items-center justify-center"
+        style="display: none"
       ></span>
       <span class="text-[10px] font-medium leading-none">Cart</span>
     </a>
 
     <a
-      href="#"
+      href="/prescription"
       class="flex flex-col items-center justify-center gap-1 py-2.5 text-ink-900/70"
     >
       <svg

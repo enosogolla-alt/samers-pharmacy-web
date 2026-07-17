@@ -24,6 +24,14 @@ app.get("/product", (req, res) => {
   res.render("product");
 });
 
+app.get("/cart", (req, res) => {
+  res.render("cart");
+});
+
+app.get("/prescription", (req, res) => {
+  res.render("prescription");
+});
+
 // --- START SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

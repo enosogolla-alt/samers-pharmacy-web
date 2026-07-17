@@ -1,0 +1,238 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-4">
+    <a href="/" class="hover:text-forest-700">Home</a>
+    <span class="mx-1">&rsaquo;</span>
+    <span class="text-ink-900">Upload Prescription</span>
+  </nav>
+  <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">
+    Upload Your Prescription
+  </h1>
+  <p class="text-ink-900/60 max-w-xl">
+    Upload a clear photo or scan of your prescription. Our licensed pharmacists
+    will verify it and prepare your order.
+  </p>
+</section>
+
+<section class="max-w-4xl mx-auto px-6 py-10" x-data="{ fileName: null }">
+  <div class="bg-white border border-mint-200 rounded-3xl p-8 md:p-10">
+    <!-- Upload / Type toggle -->
+    <div x-data="{ mode: 'upload' }">
+      <div class="flex gap-2 mb-4 p-1 bg-mint-50 rounded-capsule w-fit">
+        <button
+          @click="mode = 'upload'"
+          class="px-5 py-2 rounded-capsule text-sm font-semibold transition-colors"
+          :class="mode === 'upload' ? 'bg-forest-700 text-white' : 'text-ink-900/60'"
+        >
+          Upload File
+        </button>
+        <button
+          @click="mode = 'type'"
+          class="px-5 py-2 rounded-capsule text-sm font-semibold transition-colors"
+          :class="mode === 'type' ? 'bg-forest-700 text-white' : 'text-ink-900/60'"
+        >
+          Type it Instead
+        </button>
+      </div>
+
+      <label
+        x-show="mode === 'upload'"
+        class="block border-2 border-dashed border-mint-200 rounded-2xl h-64 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-forest-700 transition-colors mb-8"
+      >
+        <input
+          type="file"
+          accept="image/*,.pdf"
+          class="hidden"
+          @change="fileName = $event.target.files[0]?.name"
+        />
+        <span
+          class="w-14 h-14 rounded-full bg-mint-50 flex items-center justify-center"
+        >
+          <svg
+            class="w-7 h-7 text-forest-700"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 16V4m0 0L7 9m5-5l5 5M5 20h14"
+            />
+          </svg>
+        </span>
+        <p
+          class="text-ink-900 font-medium"
+          x-text="fileName || 'Click to upload or drag and drop'"
+        ></p>
+        <p class="text-xs text-ink-900/50">
+          JPG, PNG, or PDF &middot; Max 10MB
+        </p>
+      </label>
+
+      <div x-show="mode === 'type'" x-cloak class="mb-8">
+        <textarea
+          rows="6"
+          placeholder="Type your prescription details here, e.g. medicine name, dosage, and doctor's instructions..."
+          class="w-full px-4 py-3 rounded-2xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Delivery details -->
+    <div class="grid md:grid-cols-2 gap-5 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-ink-900 mb-1.5"
+          >Full Name</label
+        >
+        <input
+          type="text"
+          placeholder="Jane Doe"
+          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-900 mb-1.5"
+          >Phone Number</label
+        >
+        <input
+          type="tel"
+          placeholder="+254 7XX XXX XXX"
+          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+        />
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-ink-900 mb-1.5"
+          >Delivery Address</label
+        >
+        <input
+          type="text"
+          placeholder="e.g. Elgon View, Eldoret"
+          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+        />
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-ink-900 mb-1.5"
+          >Additional Notes
+          <span class="text-ink-900/40 font-normal">(optional)</span></label
+        >
+        <textarea
+          rows="3"
+          placeholder="Any special instructions for our pharmacist..."
+          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+        ></textarea>
+      </div>
+    </div>
+
+    <button
+      class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors"
+    >
+      Submit Prescription
+    </button>
+  </div>
+
+  <!-- Trust row -->
+  <div class="grid grid-cols-3 gap-4 mt-10">
+    <div class="flex flex-col items-center text-center gap-2">
+      <span
+        class="w-11 h-11 rounded-full bg-forest-700/10 flex items-center justify-center"
+      >
+        <svg
+          class="w-5 h-5 text-forest-700"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.04 8.582-7.5 9.75C9.04 20.582 6 16.556 6 12V6.5l6-3 6 3V12z"
+          />
+        </svg>
+      </span>
+      <span class="text-xs font-medium text-ink-900">Pharmacist Verified</span>
+    </div>
+    <div class="flex flex-col items-center text-center gap-2">
+      <span
+        class="w-11 h-11 rounded-full bg-forest-700/10 flex items-center justify-center"
+      >
+        <svg
+          class="w-5 h-5 text-forest-700"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      </span>
+      <span class="text-xs font-medium text-ink-900">Fast Delivery</span>
+    </div>
+    <div class="flex flex-col items-center text-center gap-2">
+      <span
+        class="w-11 h-11 rounded-full bg-forest-700/10 flex items-center justify-center"
+      >
+        <svg
+          class="w-5 h-5 text-forest-700"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+          />
+        </svg>
+      </span>
+      <span class="text-xs font-medium text-ink-900"
+        >Secure &amp; Confidential</span
+      >
+    </div>
+  </div>
+</section>
+
+<!-- Order Status Tracker -->
+  <div class="bg-white border border-mint-200 rounded-3xl p-8 mt-10">
+    <h2 class="font-display text-xl font-semibold text-ink-900 mb-6">Track Your Prescription</h2>
+    <div class="flex items-center justify-between relative">
+      <div class="absolute top-4 left-0 right-0 h-0.5 bg-mint-200 -z-0"></div>
+      <div class="absolute top-4 left-0 h-0.5 bg-forest-700 -z-0" style="width: 50%;"></div>
+      <div class="absolute top-4 left-[33%] w-[17%] h-0.5 bg-forest-700 -z-0 animate-pulse"></div>
+
+      <% const steps = ['Submitted', 'Verified', 'Preparing', 'Out for Delivery', 'Delivered']; %>
+      <% const currentStep = 2; %>
+      <% steps.forEach(function(step, i) { %>
+        <div class="relative z-10 flex flex-col items-center gap-2 flex-1">
+          <% if (i < currentStep) { %>
+            <span class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-forest-700 text-white">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </span>
+          <% } else if (i === currentStep) { %>
+            <span class="relative w-8 h-8 flex items-center justify-center">
+              <span class="absolute inset-0 rounded-full bg-forest-700 opacity-75 animate-ping"></span>
+              <span class="relative w-8 h-8 rounded-full bg-forest-700 text-white flex items-center justify-center text-xs font-bold"><%= i + 1 %></span>
+            </span>
+          <% } else { %>
+            <span class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-white border-2 border-mint-200 text-ink-900/30"><%= i + 1 %></span>
+          <% } %>
+          <span class="text-xs font-medium text-center <%= i <= currentStep ? 'text-ink-900' : 'text-ink-900/40' %>"><%= step %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>

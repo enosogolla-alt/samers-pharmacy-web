@@ -169,13 +169,13 @@
     <div
       class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-4 md:gap-8"
     >
-      <!-- Logo -->
-      <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
+ <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply">
         <span
           class="font-display font-semibold text-xl transition-colors duration-300"
           :class="(!transparentNav || scrolled) ? 'text-forest-700' : 'text-white'"
-          >Samers Pharmacy</span
-        >
+        >Samers Pharmacy</span>
       </a>
 
       <!-- Search (desktop) -->
@@ -199,7 +199,7 @@
       <!-- Right actions -->
       <div class="flex items-center gap-2 md:gap-5 ml-auto">
         <a
-          href="#"
+          href="/prescription"
           class="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-capsule border transition-colors duration-300"
           :class="(!transparentNav || scrolled) ? 'border-mint-200 text-ink-900 hover:bg-mint-50' : 'border-white/40 text-white hover:bg-white/10'"
         >
@@ -251,7 +251,7 @@
         </a>
 
         <!-- Cart -->
-        <button
+        <a href="/cart"
           class="relative p-2 transition-colors duration-300"
           :class="(!transparentNav || scrolled) ? 'text-ink-900' : 'text-white'"
         >
@@ -268,13 +268,8 @@
               d="M2.25 3h1.5l.9 4.5m0 0L6.6 15.6a1.5 1.5 0 001.48 1.4h9.35a1.5 1.5 0 001.48-1.24l1.13-6.26H4.65M7.5 19.5a1 1 0 100 2 1 1 0 000-2zm10 0a1 1 0 100 2 1 1 0 000-2z"
             />
           </svg>
-          <span
-            x-show="cartCount > 0"
-            x-text="cartCount"
-            x-cloak
-            class="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 rounded-full bg-coral-500 text-white text-[10px] font-bold flex items-center justify-center"
-          ></span>
-        </button>
+          <span data-cart-badge
+  class="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 rounded-full bg-coral-500 text-white text-[10px] font-bold items-center justify-center" style="display:none;"></span>
 
         <a
           href="#"

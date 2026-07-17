@@ -1,0 +1,58 @@
+<script>
+  const CART_KEY = "samers_cart";
+
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartBadge();
+  }
+
+  function addToCart(product) {
+    const cart = getCart();
+    const existing = cart.find((item) => item.id === product.id);
+    if (existing) {
+      existing.qty += product.qty || 1;
+    } else {
+      cart.push({ ...product, qty: product.qty || 1 });
+    }
+    saveCart(cart);
+  }
+
+  function removeFromCart(id) {
+    saveCart(getCart().filter((item) => item.id !== id));
+  }
+
+  function updateCartQty(id, qty) {
+    const cart = getCart();
+    const item = cart.find((i) => i.id === id);
+    if (item) {
+      item.qty = Math.max(1, qty);
+      saveCart(cart);
+    }
+  }
+
+  function getCartCount() {
+    return getCart().reduce((sum, item) => sum + item.qty, 0);
+  }
+
+  function getCartTotal() {
+    return getCart().reduce((sum, item) => sum + item.price * item.qty, 0);
+  }
+
+  function updateCartBadge() {
+    document.querySelectorAll("[data-cart-badge]").forEach((el) => {
+      const count = getCartCount();
+      el.textContent = count;
+      el.style.display = count > 0 ? "flex" : "none";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", updateCartBadge);
+</script>

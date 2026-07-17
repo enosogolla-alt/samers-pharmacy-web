@@ -1,0 +1,196 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-4">
+    <a href="/" class="hover:text-forest-700">Home</a>
+    <span class="mx-1">&rsaquo;</span> <span class="text-ink-900">Cart</span>
+  </nav>
+  <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">
+    Your Cart
+  </h1>
+  <p class="text-ink-900/60 mb-8">3 items in your cart</p>
+</section>
+
+<section
+  class="max-w-7xl mx-auto px-6 pb-16 grid md:grid-cols-[1fr_360px] gap-10 items-start"
+>
+  <!-- Cart Items -->
+  <div
+    class="space-y-4"
+    x-data="{
+    items: [],
+    init() { this.items = getCart(); },
+    updateQty(id, qty) { updateCartQty(id, qty); this.items = getCart(); },
+    remove(id) { removeFromCart(id); this.items = getCart(); }
+  }"
+  >
+    <template x-for="item in items" :key="item.id">
+      <div
+        class="bg-white border border-mint-200 rounded-2xl p-4 flex gap-4 items-center"
+      >
+        <div
+          class="rounded-xl w-20 h-20 shrink-0 flex items-center justify-center overflow-hidden"
+          style="
+            background: radial-gradient(
+              circle at 50% 40%,
+              #ffffff 0%,
+              #f3f8f5 65%,
+              #e9f7f2 100%
+            );
+          "
+        >
+          <svg
+            class="w-8 h-8 text-mint-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"
+            />
+          </svg>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-ink-900 truncate" x-text="item.name"></p>
+          <p class="text-xs text-ink-900/50 mb-2" x-text="item.variant"></p>
+          <span
+            class="text-gold-500 font-bold"
+            x-text="'KSh ' + item.price.toLocaleString()"
+          ></span>
+        </div>
+
+        <div class="flex items-center border border-mint-200 rounded-capsule">
+          <button
+            @click="updateQty(item.id, item.qty - 1)"
+            class="w-8 h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
+          >
+            &minus;
+          </button>
+          <span
+            x-text="item.qty"
+            class="w-6 text-center text-sm font-medium"
+          ></span>
+          <button
+            @click="updateQty(item.id, item.qty + 1)"
+            class="w-8 h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          @click="remove(item.id)"
+          class="p-2 text-ink-900/30 hover:text-coral-500 transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </template>
+
+    <div x-show="items.length === 0" x-cloak class="text-center py-16">
+      <p class="text-ink-900/50 mb-4">Your cart is empty</p>
+      <a
+        href="/products"
+        class="inline-flex px-6 py-3 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors"
+        >Browse Products</a
+      >
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="bg-white border border-mint-200 rounded-2xl p-6 sticky top-24">
+    <h2 class="font-display text-xl font-semibold text-ink-900 mb-5">
+      Order Summary
+    </h2>
+
+    <div
+      class="space-y-3 mb-5 text-sm"
+      x-data="{ total: 0 }"
+      x-init="total = getCartTotal()"
+    >
+      <div class="flex justify-between text-ink-900/70">
+        <span>Subtotal</span>
+        <span x-text="'KSh ' + total.toLocaleString()"></span>
+      </div>
+      <div class="flex justify-between text-ink-900/70">
+        <span>Delivery</span>
+        <span class="text-forest-700 font-medium">Calculated at checkout</span>
+      </div>
+    </div>
+
+    <div class="flex gap-2 mb-5">
+      <input
+        type="text"
+        placeholder="Promo code"
+        class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+      />
+      <button
+        class="px-4 py-2.5 rounded-xl bg-mint-50 text-forest-700 text-sm font-semibold hover:bg-mint-200 transition-colors"
+      >
+        Apply
+      </button>
+    </div>
+
+    <div
+      class="flex justify-between items-baseline mb-6 pt-4 border-t border-mint-200"
+      x-data="{ total: 0 }"
+      x-init="total = getCartTotal()"
+    >
+      <span class="font-semibold text-ink-900">Total</span>
+      <span
+        class="text-gold-500 font-bold text-2xl"
+        x-text="'KSh ' + total.toLocaleString()"
+      ></span>
+    </div>
+
+    <a
+      href="#"
+      class="block text-center py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors mb-3"
+    >
+      Proceed to Checkout
+    </a>
+    <a
+      href="/products"
+      class="block text-center text-forest-700 text-sm font-medium hover:text-ink-900"
+    >
+      &larr; Continue Shopping
+    </a>
+
+    <div
+      class="flex items-center gap-2 mt-6 pt-6 border-t border-mint-200 text-xs text-ink-900/50"
+    >
+      <svg
+        class="w-4 h-4 text-forest-700 shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.04 8.582-7.5 9.75C9.04 20.582 6 16.556 6 12V6.5l6-3 6 3V12z"
+        />
+      </svg>
+      Secure checkout &middot; M-Pesa, Visa &amp; Mastercard accepted
+    </div>
+  </div>
+</section>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>
