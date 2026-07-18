@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div x-data="{ activeFilter: 'All', view: 'grid' }">
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-6">
+    <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span>
+    <a href="/categories" class="hover:text-forest-700">Categories</a> <span class="mx-1">&rsaquo;</span>
+    <span class="text-ink-900">Baby Products</span>
+  </nav>
+
+  <div class="flex items-center gap-3 mb-6">
+    <span class="w-14 h-14 rounded-xl bg-mint-50 flex items-center justify-center shrink-0">
+      <svg class="w-6 h-6 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </span>
+    <h1 class="font-display text-2xl md:text-3xl font-semibold text-ink-900">Baby Products</h1>
+  </div>
+
+  <div class="flex flex-wrap gap-2 mb-8">
+    <% const filters = ['All', 'Baby Cleaning & Skin Care', 'Baby Foods', 'Baby Activity']; %>
+    <% filters.forEach(function(f) { %>
+      <button @click="activeFilter = '<%= f %>'"
+        class="px-4 py-2 rounded-capsule text-sm font-medium border transition-colors"
+        :class="activeFilter === '<%= f %>' ? 'bg-forest-700 text-white border-forest-700' : 'border-mint-200 text-ink-900/70 hover:bg-mint-50'">
+        <%= f %>
+      </button>
+    <% }); %>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-4 md:items-center md:justify-between mb-8">
+    <div class="relative max-w-sm w-full">
+      <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-900/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" placeholder="Search in Baby Products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mint-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+    </div>
+    <div class="flex items-center gap-3">
+      <p class="text-sm text-ink-900/60">6 products</p>
+      <select class="text-sm border border-mint-200 rounded-xl px-3 py-2 focus:outline-none">
+        <option>Featured</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+        <option>Name: A-Z</option>
+      </select>
+      <div class="flex border border-mint-200 rounded-xl overflow-hidden">
+        <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h6v6H4V6zm0 8h6v6H4v-6zm10-8h6v6h-6V6zm0 8h6v6h-6v-6z"/></svg>
+        </button>
+        <button @click="view = 'list'" :class="view === 'list' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 pb-16">
+  <% const products = [
+    { name: 'Infantino Good Bites Teether', price: 890, discount: null },
+    { name: 'Johnson\'s Baby Lotion 200ml', price: 650, discount: null },
+    { name: 'Dr. Brown\'s Bottle 6oz', price: 1450, discount: null },
+    { name: 'Dr. Brown\'s Pacifier 0m+', price: 480, discount: null },
+    { name: 'Pampers Baby Dry Size 2', price: 1290, discount: '-10%' },
+    { name: 'NAN Optipro Infant Formula', price: 1960, discount: null },
+  ]; %>
+
+  <div x-show="view === 'grid'" class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <% products.forEach(function(p) { %>
+      <a href="/product" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex flex-col">
+        <div class="relative rounded-xl h-36 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <% if (p.discount) { %><span class="absolute top-3 left-3 px-2.5 py-1 rounded-capsule bg-coral-500 text-white text-[10px] font-bold"><%= p.discount %></span><% } %>
+          <svg class="w-10 h-10 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        </div>
+        <p class="text-sm font-medium text-ink-900 mb-3 leading-snug flex-1"><%= p.name %></p>
+        <span class="text-gold-500 font-bold text-sm">KSh <%= p.price %></span>
+      </a>
+    <% }); %>
+  </div>
+
+  <div x-show="view === 'list'" x-cloak class="space-y-4">
+    <% products.forEach(function(p) { %>
+      <a href="/product" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex gap-5 items-center">
+        <div class="relative rounded-xl w-24 h-24 shrink-0 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <svg class="w-8 h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-medium text-ink-900 mb-1"><%= p.name %></p>
+          <span class="text-gold-500 font-bold text-sm">KSh <%= p.price %></span>
+        </div>
+      </a>
+    <% }); %>
+  </div>
+</section>
+
+</div>
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>

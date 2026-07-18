@@ -32,6 +32,30 @@ app.get("/prescription", (req, res) => {
   res.render("prescription");
 });
 
+app.get("/category/:slug", (req, res) => {
+  res.render("category");
+});
+
+app.get("/categories", (req, res) => {
+  res.render("categories");
+});
+
+app.get("/categories", (req, res) => {
+  res.render("categories");
+});
+
+app.get("/conditions", (req, res) => {
+  res.render("conditions");
+});
+
+app.get("/brands", (req, res) => {
+  res.render("brands");
+});
+
+app.get("/deals", (req, res) => {
+  res.render("deals");
+});
+
 // --- START SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<section class="bg-gradient-to-r from-coral-500 to-gold-500 py-14 text-center">
+  <h1 class="font-display text-3xl md:text-4xl font-semibold text-white mb-2">&#128293; Hot Deals</h1>
+  <p class="text-white/90">Don't miss out on these amazing offers!</p>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 py-16">
+  <% const deals = [
+    // { name: 'Vitamin C 1000mg Tablets', price: 850, oldPrice: 1000, discount: '15% OFF' },
+  ]; %>
+
+  <% if (deals.length === 0) { %>
+    <div class="text-center py-16">
+      <span class="text-5xl block mb-5">&#127991;&#65039;</span>
+      <h2 class="font-display text-xl font-semibold text-ink-900 mb-2">No Active Deals</h2>
+      <p class="text-ink-900/60 mb-6">Check back soon for amazing offers!</p>
+      <a href="/products" class="inline-flex items-center gap-2 px-6 py-3 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l.9 4.5m0 0L6.6 15.6a1.5 1.5 0 001.48 1.4h9.35a1.5 1.5 0 001.48-1.24l1.13-6.26H4.65M7.5 19.5a1 1 0 100 2 1 1 0 000-2zm10 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+        Browse Products
+      </a>
+    </div>
+  <% } else { %>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <% deals.forEach(function(item) { %>
+        <a href="/product" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex flex-col">
+          <div class="relative rounded-xl h-40 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-capsule bg-coral-500 text-white text-[10px] font-bold"><%= item.discount %></span>
+            <svg class="w-12 h-12 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          </div>
+          <p class="text-sm font-medium text-ink-900 mb-3 leading-snug flex-1"><%= item.name %></p>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-gold-500 font-bold text-sm">KSh <%= item.price %></span>
+            <span class="text-ink-900/40 text-xs line-through">KSh <%= item.oldPrice %></span>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>
