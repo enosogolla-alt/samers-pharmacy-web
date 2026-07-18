@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-4">
+    <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span> <span class="text-ink-900">Store Locator</span>
+  </nav>
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">Find a Store Near You</h1>
+      <p class="text-ink-900/60 max-w-xl">Visit us in person for consultations, diagnostics, and in-store shopping.</p>
+    </div>
+    <button class="shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-capsule bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Store Near You
+    </button>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
+  <% const stores = [
+    { name: 'Eldoret Branch', address: 'P.O. Box 30128-30100, Eldoret', phone: '+254 753 392 372', hours: 'Mon &ndash; Sat: 8:00 AM &ndash; 8:00 PM', badge: 'Main Branch' },
+    { name: 'Khayega Branch', address: 'Khayega, Kakamega County', phone: '+254 724 777 198', hours: 'Mon &ndash; Sat: 8:00 AM &ndash; 7:00 PM', badge: null },
+  ]; %>
+  <% stores.forEach(function(store) { %>
+    <div class="bg-white border border-mint-200 rounded-3xl overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="h-40 relative flex items-center justify-center" style="background: linear-gradient(135deg, #F1E9FA 0%, #FDF3E3 100%);">
+        <svg class="w-10 h-10 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <% if (store.badge) { %>
+          <span class="absolute top-4 left-4 px-3 py-1 rounded-capsule bg-gold-500 text-white text-xs font-bold"><%= store.badge %></span>
+        <% } %>
+      </div>
+      <div class="p-6">
+        <h3 class="font-display text-xl font-semibold text-ink-900 mb-4"><%= store.name %></h3>
+
+        <div class="space-y-3 text-sm mb-6">
+          <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-forest-700 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="text-ink-900/70"><%= store.address %></span>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-gold-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            <span class="text-ink-900/70"><%= store.phone %></span>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-forest-700 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-ink-900/70"><%- store.hours %></span>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <a href="tel:<%= store.phone.replace(/\s/g, '') %>" class="flex-1 text-center py-2.5 rounded-capsule bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Call Store</a>
+          <a href="#" class="flex-1 text-center py-2.5 rounded-capsule border border-gold-500 text-gold-500 text-sm font-semibold hover:bg-gold-500 hover:text-white transition-colors">Get Directions</a>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+</section>
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>

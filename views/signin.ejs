@@ -1,0 +1,160 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+<section class="max-w-md mx-auto px-6 py-16" x-data="{ mode: 'signin' }">
+  <div class="text-center mb-8">
+    <a href="/" class="inline-flex items-center gap-2 mb-6">
+      <img
+        src="/images/logo-icon.png"
+        alt="Samers Pharmacy"
+        class="w-10 h-10 object-contain mix-blend-multiply"
+      />
+      <span class="font-display font-semibold text-xl text-forest-700"
+        >Samers Pharmacy</span
+      >
+    </a>
+    <h1
+      class="font-display text-2xl font-semibold text-ink-900"
+      x-text="mode === 'signin' ? 'Welcome back' : 'Create your account'"
+    ></h1>
+    <p
+      class="text-ink-900/60 text-sm mt-1"
+      x-text="mode === 'signin' ? 'Sign in to manage your orders and prescriptions' : 'Sign up to start shopping and tracking your orders'"
+    ></p>
+  </div>
+
+  <div class="bg-white border border-mint-200 rounded-3xl p-8">
+    <!-- Toggle -->
+    <div class="flex gap-2 p-1 bg-mint-50 rounded-capsule mb-7">
+      <button
+        @click="mode = 'signin'"
+        class="flex-1 py-2.5 rounded-capsule text-sm font-semibold transition-colors"
+        :class="mode === 'signin' ? 'bg-forest-700 text-white' : 'text-ink-900/60'"
+      >
+        Sign In
+      </button>
+      <button
+        @click="mode = 'signup'"
+        class="flex-1 py-2.5 rounded-capsule text-sm font-semibold transition-colors"
+        :class="mode === 'signup' ? 'bg-forest-700 text-white' : 'text-ink-900/60'"
+      >
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Social sign-in options -->
+    <div class="space-y-3 mb-6">
+      <button
+        class="w-full flex items-center justify-center gap-3 py-3 rounded-capsule border border-mint-200 hover:bg-mint-50 transition-colors text-sm font-medium text-ink-900"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path
+            fill="#4285F4"
+            d="M23.52 12.27c0-.85-.08-1.66-.22-2.45H12v4.64h6.47a5.54 5.54 0 01-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"
+          />
+          <path
+            fill="#34A853"
+            d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-3c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.3v3.09A12 12 0 0012 24z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M5.31 14.32a7.2 7.2 0 010-4.64V6.59H1.3a12 12 0 000 10.82l4.01-3.09z"
+          />
+          <path
+            fill="#EA4335"
+            d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 001.3 6.59l4.01 3.09C6.25 6.86 8.89 4.77 12 4.77z"
+          />
+        </svg>
+        Continue with Google
+      </button>
+      <button
+        class="w-full flex items-center justify-center gap-3 py-3 rounded-capsule border border-mint-200 hover:bg-mint-50 transition-colors text-sm font-medium text-ink-900"
+      >
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08l-.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
+          />
+        </svg>
+        Continue with Apple
+      </button>
+      <button
+        class="w-full flex items-center justify-center gap-3 py-3 rounded-capsule border border-mint-200 hover:bg-mint-50 transition-colors text-sm font-medium text-ink-900"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#0364B8" d="M13.5 3v8.25H24V4.5A1.5 1.5 0 0022.5 3h-9z" />
+          <path
+            fill="#0078D4"
+            d="M13.5 12.75V21h9a1.5 1.5 0 001.5-1.5v-6.75h-10.5z"
+          />
+          <path fill="#28A8EA" d="M0 4.5v6h13.5V3h-12A1.5 1.5 0 000 4.5z" />
+          <path fill="#0364B8" d="M0 12.75v6A1.5 1.5 0 001.5 21h12v-8.25H0z" />
+        </svg>
+        Continue with Outlook
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3 mb-6">
+      <span class="flex-1 h-px bg-mint-200"></span>
+      <span class="text-xs text-ink-900/40 font-medium">OR</span>
+      <span class="flex-1 h-px bg-mint-200"></span>
+    </div>
+
+    <!-- Sign Up only field -->
+    <div x-show="mode === 'signup'" x-cloak class="mb-5">
+      <label class="block text-sm font-medium text-ink-900 mb-1.5"
+        >Full Name</label
+      >
+      <input
+        type="text"
+        placeholder="Jane Doe"
+        class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+      />
+    </div>
+
+    <div class="mb-5">
+      <label class="block text-sm font-medium text-ink-900 mb-1.5"
+        >Phone Number or Email</label
+      >
+      <input
+        type="text"
+        placeholder="+254 7XX XXX XXX"
+        class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+      />
+    </div>
+
+    <div class="mb-2">
+      <label class="block text-sm font-medium text-ink-900 mb-1.5"
+        >Password</label
+      >
+      <input
+        type="password"
+        placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+        class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
+      />
+    </div>
+
+    <div x-show="mode === 'signin'" class="text-right mb-6">
+      <a href="#" class="text-xs font-medium text-forest-700 hover:text-ink-900"
+        >Forgot password?</a
+      >
+    </div>
+    <div x-show="mode === 'signup'" x-cloak class="mb-6"></div>
+
+    <button
+      class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors"
+    >
+      <span x-text="mode === 'signin' ? 'Sign In' : 'Create Account'"></span>
+    </button>
+
+    <p
+      class="text-center text-xs text-ink-900/50 mt-6"
+      x-show="mode === 'signup'"
+      x-cloak
+    >
+      By signing up, you agree to our
+      <a href="#" class="text-forest-700 font-medium">Terms</a> and
+      <a href="#" class="text-forest-700 font-medium">Privacy Policy</a>.
+    </p>
+  </div>
+</section>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>
