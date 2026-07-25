@@ -4,10 +4,136 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  icon        String?
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Condition {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Brand {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  description       String?
+  price             Int
+  oldPrice          Int?
+  discountLabel     String?
+  imageUrl          String?
+  stock             Int      @default(0)
+  dosageForm        String?
+  strength          String?
+  packSize          String?
+  activeIngredient  String?
+  rating            Float    @default(0)
+  featured          Boolean  @default(false)
+  category          Category? @relation(fields: [categoryId], references: [id])
+  categoryId        String?
+  brand             Brand?    @relation(fields: [brandId], references: [id])
+  brandId           String?
+  orderItems        OrderItem[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String?        @unique
+  phone         String?        @unique
+  password      String
+  orders        Order[]
+  prescriptions Prescription[]
+  createdAt     DateTime       @default(now())
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  user       User?       @relation(fields: [userId], references: [id])
+  userId     String?
+  status     String      @default("pending") // pending, preparing, out_for_delivery, delivered
+  total      Int
+  items      OrderItem[]
+  createdAt  DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  qty       Int
+  price     Int
+}
+
+model Prescription {
+  id              String   @id @default(cuid())
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?
+  fileUrl         String?
+  typedContent    String?
+  fullName        String
+  phone           String
+  deliveryAddress String
+  notes           String?
+  status          String   @default("submitted") // submitted, verified, preparing, out_for_delivery, delivered
+  createdAt       DateTime @default(now())
+}
+
+model ConsultationBooking {
+  id        String   @id @default(cuid())
+  mode      String   // online, physical
+  topic     String
+  branch    String?
+  date      String?
+  time      String?
+  fullName  String
+  phone     String
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model Store {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  hours     String?
+  isMain    Boolean  @default(false)
 }

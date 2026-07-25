@@ -4,6 +4,12 @@
 
 require("dotenv").config();
 const express = require("express");
+const { PrismaClient } = require("@prisma/client");
+const { PrismaPg } = require("@prisma/adapter-pg");
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
 const app = express();
 
 app.set("views", "./views");
@@ -39,16 +45,33 @@ Talk to your pharmacist about tools like pill organizers, refill reminders, or c
 
 // --- ROUTES ---
 // (routes will go here as we build real pages, e.g. app.get('/', ...) for shop.ejs)
-app.get("/", (req, res) => {
-  res.render("home");
+app.get("/", async (req, res) => {
+  const categories = await prisma.category.findMany();
+  const featuredProducts = await prisma.product.findMany({
+    where: { featured: true },
+  });
+  const offers = await prisma.product.findMany({
+    where: { oldPrice: { not: null } },
+  });
+
+  res.render("home", { categories, featuredProducts, offers });
 });
 
-app.get("/products", (req, res) => {
-  res.render("products");
+app.get("/products", async (req, res) => {
+  const products = await prisma.product.findMany({
+    include: { category: true },
+  });
+  const categories = await prisma.category.findMany();
+  res.render("products", { products, categories });
 });
 
-app.get("/product", (req, res) => {
-  res.render("product");
+app.get("/product/:slug", async (req, res) => {
+  const product = await prisma.product.findUnique({
+    where: { slug: req.params.slug },
+    include: { category: true, brand: true },
+  });
+  if (!product) return res.status(404).send("Product not found");
+  res.render("product", { product });
 });
 
 app.get("/cart", (req, res) => {
@@ -59,8 +82,15 @@ app.get("/prescription", (req, res) => {
   res.render("prescription");
 });
 
-app.get("/category/:slug", (req, res) => {
-  res.render("category");
+app.get("/category/:slug", async (req, res) => {
+  const category = await prisma.category.findUnique({
+    where: { slug: req.params.slug },
+  });
+  if (!category) return res.status(404).send("Category not found");
+  const products = await prisma.product.findMany({
+    where: { categoryId: category.id },
+  });
+  res.render("category", { category, products });
 });
 
 app.get("/categories", (req, res) => {

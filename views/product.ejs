@@ -5,7 +5,7 @@
   <nav class="text-sm text-ink-900/50 mb-6">
     <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span>
     <a href="/products" class="hover:text-forest-700">Products</a> <span class="mx-1">&rsaquo;</span>
-    <span class="text-ink-900">Duromine 15mg Capsules 30's</span>
+    <span class="text-ink-900"><%= product.name %></span>
   </nav>
 </section>
 
@@ -13,7 +13,9 @@
 
   <!-- Product Image -->
   <div class="relative rounded-3xl h-96 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
-    <span class="absolute top-5 left-5 px-3 py-1.5 rounded-capsule bg-coral-500 text-white text-xs font-bold">-11% OFF</span>
+    <% if (product.discountLabel) { %>
+      <span class="absolute top-5 left-5 px-3 py-1.5 rounded-capsule bg-coral-500 text-white text-xs font-bold"><%= product.discountLabel %></span>
+    <% } %>
     <div class="absolute top-5 right-5 flex flex-col gap-2">
       <button class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-ink-900/60 hover:text-coral-500">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
@@ -27,15 +29,17 @@
 
   <!-- Product Info -->
   <div x-data="{ qty: 1 }">
-    <span class="text-forest-700 font-semibold text-sm">Medicines &middot; Generic</span>
-    <h1 class="font-display text-3xl font-semibold text-ink-900 mt-2 mb-3">Duromine 15mg Capsules 30's</h1>
+   <span class="text-forest-700 font-semibold text-sm"><%= product.category ? product.category.name : 'Uncategorized' %></span>
+    <h1 class="font-display text-3xl font-semibold text-ink-900 mt-2 mb-3"><%= product.name %></h1>
     <p class="text-ink-900/60 mb-5 leading-relaxed">
-      It is prescribed for the short-term management of obesity, alongside exercise, behavioral modifications, and caloric restriction.
+      <%= product.description || 'No description available.' %>
     </p>
 
     <div class="flex items-baseline gap-3 mb-4">
-      <span class="text-gold-500 font-bold text-3xl">KSh 5,700</span>
-      <span class="text-ink-900/40 text-lg line-through">KSh 6,437</span>
+      <span class="text-gold-500 font-bold text-3xl">KSh <%= product.price.toLocaleString() %></span>
+      <% if (product.oldPrice) { %>
+        <span class="text-ink-900/40 text-lg line-through">KSh <%= product.oldPrice.toLocaleString() %></span>
+      <% } %>
     </div>
 
     <div class="flex items-center gap-2 mb-6">
@@ -44,9 +48,11 @@
         <svg class="w-4 h-4 text-mint-200" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
       </div>
       <span class="text-sm text-ink-900/50">4.2 (128 reviews)</span>
-      <span class="text-sm text-forest-700 font-medium ml-2">&middot; In Stock 
-        
-      </span>
+      <% if (product.stock > 0) { %>
+        <span class="text-sm text-forest-700 font-medium ml-2">&middot; In Stock</span>
+      <% } else { %>
+        <span class="text-sm text-coral-500 font-medium ml-2">&middot; Out of Stock</span>
+      <% } %>
     </div>
 
     <div class="bg-mint-50 rounded-2xl p-5 mb-6 grid grid-cols-2 gap-4 text-sm">
