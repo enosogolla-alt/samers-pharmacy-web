@@ -101,16 +101,21 @@ app.get("/categories", (req, res) => {
   res.render("categories");
 });
 
-app.get("/conditions", (req, res) => {
-  res.render("conditions");
+app.get("/conditions", async (req, res) => {
+  const conditions = await prisma.condition.findMany();
+  res.render("conditions", { conditions });
 });
 
-app.get("/brands", (req, res) => {
-  res.render("brands");
+app.get("/brands", async (req, res) => {
+  const brands = await prisma.brand.findMany();
+  res.render("brands", { brands });
 });
 
-app.get("/deals", (req, res) => {
-  res.render("deals");
+app.get("/deals", async (req, res) => {
+  const deals = await prisma.product.findMany({
+    where: { oldPrice: { not: null } },
+  });
+  res.render("deals", { deals });
 });
 
 app.get("/health-services", (req, res) => {

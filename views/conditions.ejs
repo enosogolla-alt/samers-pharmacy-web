@@ -11,20 +11,6 @@
 
 <section class="max-w-7xl mx-auto px-6 py-10">
   <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-    <% const conditions = [
-      { name: 'Aches & Pains', slug: 'aches-pains' },
-      { name: 'Acne', slug: 'acne' },
-      { name: 'Allergy & Hayfever', slug: 'allergy-hayfever' },
-      { name: 'Anti Infectives', slug: 'anti-infectives' },
-      { name: 'Bites & Stings', slug: 'bites-stings' },
-      { name: 'Cough, Cold & Flu', slug: 'cough-cold-flu' },
-      { name: 'Dry Skin', slug: 'dry-skin' },
-      { name: 'Eczema', slug: 'eczema' },
-      { name: 'Eye and Ear Care', slug: 'eye-ear-care' },
-      { name: 'First Aid & Bandages', slug: 'first-aid-bandages' },
-      { name: 'Oily Skin', slug: 'oily-skin' },
-      { name: 'Oral Care', slug: 'oral-care' },
-    ]; %>
     <% conditions.forEach(function(c) { %>
       <a href="/condition/<%= c.slug %>" class="bg-white border border-mint-200 rounded-2xl p-5 flex items-center justify-between gap-3 hover:border-forest-700 hover:shadow-md transition-all group">
         <span class="font-semibold text-ink-900 text-sm"><%= c.name %></span>

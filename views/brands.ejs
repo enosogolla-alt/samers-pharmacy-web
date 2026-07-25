@@ -11,13 +11,9 @@
 
 <section class="max-w-7xl mx-auto px-6 py-10">
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
-    <% const brands = [
-      'CeraVe', 'La Roche-Posay', 'Garnier', 'Eucerin', 'Centrum', 'Benylin',
-      'Aptamil', 'Nestle NAN', 'Panadol', 'Vitabiotics', 'Jamieson', 'Dr. Esthe'
-    ]; %>
-    <% brands.forEach(function(b) { %>
-      <a href="/brand/<%= b.toLowerCase().replace(/[^a-z0-9]+/g, '-') %>" class="bg-white border border-mint-200 rounded-2xl p-6 flex items-center justify-center text-center hover:border-forest-700 hover:shadow-md transition-all h-24">
-        <span class="font-semibold text-ink-900 text-sm"><%= b %></span>
+   <% brands.forEach(function(b) { %>
+      <a href="/brand/<%= b.slug %>" class="bg-white border border-mint-200 rounded-2xl p-6 flex items-center justify-center text-center hover:border-forest-700 hover:shadow-md transition-all h-24">
+        <span class="font-semibold text-ink-900 text-sm"><%= b.name %></span>
       </a>
     <% }); %>
   </div>
