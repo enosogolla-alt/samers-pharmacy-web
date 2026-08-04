@@ -18,16 +18,12 @@
 </section>
 
 <section class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
-  <% const stores = [
-    { name: 'Eldoret Branch', address: 'P.O. Box 30128-30100, Eldoret', phone: '+254 753 392 372', hours: 'Mon &ndash; Sat: 8:00 AM &ndash; 8:00 PM', badge: 'Main Branch' },
-    { name: 'Khayega Branch', address: 'Khayega, Kakamega County', phone: '+254 724 777 198', hours: 'Mon &ndash; Sat: 8:00 AM &ndash; 7:00 PM', badge: null },
-  ]; %>
   <% stores.forEach(function(store) { %>
     <div class="bg-white border border-mint-200 rounded-3xl overflow-hidden hover:shadow-lg transition-shadow">
       <div class="h-40 relative flex items-center justify-center" style="background: linear-gradient(135deg, #F1E9FA 0%, #FDF3E3 100%);">
         <svg class="w-10 h-10 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <% if (store.badge) { %>
-          <span class="absolute top-4 left-4 px-3 py-1 rounded-capsule bg-gold-500 text-white text-xs font-bold"><%= store.badge %></span>
+        <% if (store.isMain) { %>
+          <span class="absolute top-4 left-4 px-3 py-1 rounded-capsule bg-gold-500 text-white text-xs font-bold">Main Branch</span>
         <% } %>
       </div>
       <div class="p-6">

@@ -16,7 +16,15 @@
 </section>
 
 <section class="max-w-4xl mx-auto px-6 py-10" x-data="{ fileName: null }">
-  <div class="bg-white border border-mint-200 rounded-3xl p-8 md:p-10">
+
+  <% if (success) { %>
+    <div class="bg-forest-700/10 border border-forest-700/30 rounded-2xl p-5 mb-8 flex items-center gap-3">
+      <svg class="w-5 h-5 text-forest-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <p class="text-sm font-medium text-ink-900">Your prescription has been submitted. Our pharmacist team will verify it shortly.</p>
+    </div>
+  <% } %>
+  <form action="/prescription" method="POST" enctype="multipart/form-data" class="bg-white border border-mint-200 rounded-3xl p-8 md:p-10">
+    <input type="hidden" name="mode" :value="mode">
     <!-- Upload / Type toggle -->
     <div x-data="{ mode: 'upload' }">
       <div class="flex gap-2 mb-4 p-1 bg-mint-50 rounded-capsule w-fit">
@@ -40,12 +48,7 @@
         x-show="mode === 'upload'"
         class="block border-2 border-dashed border-mint-200 rounded-2xl h-64 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-forest-700 transition-colors mb-8"
       >
-        <input
-          type="file"
-          accept="image/*,.pdf"
-          class="hidden"
-          @change="fileName = $event.target.files[0]?.name"
-        />
+        <input type="file" name="prescriptionFile" accept="image/*,.pdf" class="hidden" @change="fileName = $event.target.files[0]?.name">
         <span
           class="w-14 h-14 rounded-full bg-mint-50 flex items-center justify-center"
         >
@@ -73,11 +76,7 @@
       </label>
 
       <div x-show="mode === 'type'" x-cloak class="mb-8">
-        <textarea
-          rows="6"
-          placeholder="Type your prescription details here, e.g. medicine name, dosage, and doctor's instructions..."
-          class="w-full px-4 py-3 rounded-2xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        ></textarea>
+        <textarea name="typedContent" rows="6" placeholder="Type your prescription details here, e.g. medicine name, dosage, and doctor's instructions..." class="w-full px-4 py-3 rounded-2xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"></textarea>
       </div>
     </div>
 
@@ -89,7 +88,8 @@
         >
         <input
           type="text"
-          placeholder="Jane Doe"
+          name="fullName" required
+          placeholder=""
           class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
         />
       </div>
@@ -99,6 +99,7 @@
         >
         <input
           type="tel"
+          name="phone" required
           placeholder="+254 7XX XXX XXX"
           class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
         />
@@ -109,6 +110,7 @@
         >
         <input
           type="text"
+          name="deliveryAddress" required
           placeholder="e.g. Elgon View, Eldoret"
           class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
         />
@@ -120,18 +122,17 @@
         >
         <textarea
           rows="3"
+          name="notes"
           placeholder="Any special instructions for our pharmacist..."
           class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
         ></textarea>
       </div>
     </div>
 
-    <button
-      class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors"
-    >
+    <button type="submit" class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
       Submit Prescription
     </button>
-  </div>
+  </form>
 
   <!-- Trust row -->
   <div class="grid grid-cols-3 gap-4 mt-10">

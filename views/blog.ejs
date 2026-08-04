@@ -11,13 +11,7 @@
 
 <section class="max-w-7xl mx-auto px-6 py-10">
   <div class="grid md:grid-cols-3 gap-8">
-    <% const posts = [
-      { slug: 'mid-year-reset', title: 'Mid-Year Reset: 7 Simple Self-Care Tips to Recharge', excerpt: 'Halfway through the year, small habits can make a big difference to how you feel.' },
-      { slug: 'dry-vs-dehydrated-skin', title: 'Dry Skin vs. Dehydrated Skin — Why People Confuse Them', excerpt: 'Understanding the difference is the first step to treating either one correctly.' },
-      { slug: 'being-there-through-every-moment', title: 'Why Being There Through Every Moment Matters', excerpt: 'From routine check-ups to life\'s bigger decisions, consistent care changes outcomes.' },
-      { slug: 'managing-chronic-conditions', title: 'Managing Chronic Conditions Without Losing Yourself', excerpt: 'Practical, sustainable habits for living well alongside a long-term diagnosis.' },
-    ]; %>
-    <% posts.forEach(function(post) { %>
+   <% posts.forEach(function(post) { %>
       <a href="/blog/<%= post.slug %>" class="group">
         <div class="rounded-2xl h-48 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #E4D4F5 0%, #F1E9FA 100%);"></div>
         <h3 class="font-display text-lg font-semibold text-ink-900 mb-2 leading-snug group-hover:text-forest-700 transition-colors"><%= post.title %></h3>

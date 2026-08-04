@@ -15,6 +15,13 @@
 </section>
 
 <section class="max-w-3xl mx-auto px-6 py-10" x-data="{ mode: 'online' }">
+
+ <% if (success) { %>
+    <div class="bg-gold-500/10 border border-gold-500/40 rounded-2xl p-5 mb-8 flex items-center gap-3">
+      <svg class="w-5 h-5 text-gold-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <p class="text-sm font-medium text-ink-900">Your consultation request has been submitted. We'll be in touch shortly to confirm.</p>
+    </div>
+  <% } %>
   <!-- Toggle -->
   <div class="flex gap-2 p-1 bg-mint-50 rounded-capsule w-fit mx-auto mb-10">
     <button
@@ -64,15 +71,14 @@
     </button>
   </div>
 
-  <div class="bg-white border border-mint-200 rounded-3xl p-8">
+ <form action="/consultation" method="POST" class="bg-white border border-mint-200 rounded-3xl p-8">
+    <input type="hidden" name="mode" :value="mode">
     <!-- Topic -->
     <div class="mb-6">
       <label class="block text-sm font-medium text-ink-900 mb-1.5"
         >What would you like to discuss?</label
       >
-      <select
-        class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-      >
+      <select name="topic" required class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
         <option>Chronic Conditions</option>
         <option>Mental Health</option>
         <option>Skin & Dermatology</option>
@@ -92,19 +98,13 @@
         <label class="block text-sm font-medium text-ink-900 mb-1.5"
           >Preferred Date</label
         >
-        <input
-          type="date"
-          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        />
+       <input type="date" name="date" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
       </div>
       <div>
         <label class="block text-sm font-medium text-ink-900 mb-1.5"
           >Preferred Time</label
         >
-        <input
-          type="time"
-          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        />
+       <input type="time" name="time" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
       </div>
     </div>
 
@@ -113,9 +113,7 @@
       <label class="block text-sm font-medium text-ink-900 mb-1.5"
         >Choose a Branch</label
       >
-      <select
-        class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-      >
+      <select name="branch" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
         <option>Eldoret Branch</option>
         <option>Khayega Branch</option>
       </select>
@@ -127,43 +125,27 @@
         <label class="block text-sm font-medium text-ink-900 mb-1.5"
           >Full Name</label
         >
-        <input
-          type="text"
-          placeholder="Jane Doe"
-          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        />
+       <input type="text" name="fullName" required placeholder="Surname, First Name Second Name" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
       </div>
       <div>
         <label class="block text-sm font-medium text-ink-900 mb-1.5"
           >Phone Number</label
         >
-        <input
-          type="tel"
-          placeholder="+254 7XX XXX XXX"
-          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        />
+       <input type="tel" name="phone" required placeholder="+254 7XX XXX XXX" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
       </div>
       <div class="md:col-span-2">
         <label class="block text-sm font-medium text-ink-900 mb-1.5"
           >Notes
           <span class="text-ink-900/40 font-normal">(optional)</span></label
         >
-        <textarea
-          rows="3"
-          placeholder="Briefly describe what you'd like to talk about..."
-          class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-        ></textarea>
+        <textarea name="notes" rows="3" placeholder="Briefly describe what you'd like to talk about..." class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"></textarea>
       </div>
     </div>
 
-    <button
-      class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors"
-    >
-      <span
-        x-text="mode === 'online' ? 'Book Online Consultation' : 'Book In-Store Visit'"
-      ></span>
+    <button type="submit" class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+      <span x-text="mode === 'online' ? 'Book Online Consultation' : 'Book In-Store Visit'"></span>
     </button>
-  </div>
+  </form>
 </section>
 
 <%- include('partials/bottom-nav') %> <%- include('partials/footer') %>

@@ -12,36 +12,41 @@ const prisma = new PrismaClient({ adapter });
 
 const app = express();
 
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+const uploadDir = path.join(__dirname, "public", "uploads", "prescriptions");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+});
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
+
 app.set("views", "./views");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
-const blogPosts = {
-  "mid-year-reset": {
-    title: "Mid-Year Reset: 7 Simple Self-Care Tips to Recharge",
-    body: `Halfway through the year, small habits can make a big difference to how you feel. Whether it's rethinking your sleep schedule, revisiting your hydration habits, or simply carving out ten quiet minutes a day, small resets compound over time.
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
 
-Start by auditing your current routine honestly. What's serving you, and what's just habit? From there, pick one or two changes to focus on rather than overhauling everything at once — sustainable change beats a dramatic short-lived burst every time.`,
-  },
-  "dry-vs-dehydrated-skin": {
-    title: "Dry Skin vs. Dehydrated Skin — Why People Confuse Them",
-    body: `Dry skin lacks oil, while dehydrated skin lacks water — and treating one like the other often makes things worse. Dry skin is a skin type, usually genetic and long-term, while dehydration is a temporary condition that can affect any skin type, including oily skin.
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "dev-secret-change-this",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 7 days
+  }),
+);
 
-If your skin feels tight and flaky, you likely need richer, oil-based moisturizers. If it feels tight but still looks shiny or breaks out easily, hydration (think hyaluronic acid, water-based serums) is what's missing.`,
-  },
-  "being-there-through-every-moment": {
-    title: "Why Being There Through Every Moment Matters",
-    body: `From routine check-ups to life's bigger decisions, consistent care changes outcomes. Healthcare isn't just about the moments of crisis — it's the quiet, ongoing relationship between you and a pharmacy or provider who knows your history.
-
-That consistency is why we built Samers Pharmacy the way we did: not just a place to fill a prescription once, but a partner across every stage of your health journey.`,
-  },
-  "managing-chronic-conditions": {
-    title: "Managing Chronic Conditions Without Losing Yourself",
-    body: `Practical, sustainable habits for living well alongside a long-term diagnosis. A chronic condition doesn't have to define your identity — but it does require systems: medication routines, regular monitoring, and a support network you can rely on.
-
-Talk to your pharmacist about tools like pill organizers, refill reminders, or combination dosing that simplifies your day-to-day management.`,
-  },
-};
+// Makes the logged-in user available in every EJS template automatically
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  next();
+});
 
 // --- ROUTES ---
 // (routes will go here as we build real pages, e.g. app.get('/', ...) for shop.ejs)
@@ -79,8 +84,34 @@ app.get("/cart", (req, res) => {
 });
 
 app.get("/prescription", (req, res) => {
-  res.render("prescription");
+  res.render("prescription", { success: req.query.success === "1" });
 });
+
+app.post(
+  "/prescription",
+  upload.single("prescriptionFile"),
+  async (req, res) => {
+    const { mode, typedContent, fullName, phone, deliveryAddress, notes } =
+      req.body;
+
+    const fileUrl = req.file
+      ? `/uploads/prescriptions/${req.file.filename}`
+      : null;
+
+    await prisma.prescription.create({
+      data: {
+        fileUrl,
+        typedContent: mode === "type" ? typedContent : null,
+        fullName,
+        phone,
+        deliveryAddress,
+        notes,
+      },
+    });
+
+    res.redirect("/prescription?success=1");
+  },
+);
 
 app.get("/category/:slug", async (req, res) => {
   const category = await prisma.category.findUnique({
@@ -123,15 +154,28 @@ app.get("/health-services", (req, res) => {
 });
 
 app.get("/consultation", (req, res) => {
-  res.render("consultation");
+  res.render("consultation", { success: req.query.success === "1" });
 });
 
-app.get("/blog", (req, res) => {
-  res.render("blog");
+app.post("/consultation", async (req, res) => {
+  const { mode, topic, branch, date, time, fullName, phone, notes } = req.body;
+  await prisma.consultationBooking.create({
+    data: { mode, topic, branch, date, time, fullName, phone, notes },
+  });
+  res.redirect("/consultation?success=1");
 });
 
-app.get("/blog/:slug", (req, res) => {
-  const post = blogPosts[req.params.slug];
+app.get("/blog", async (req, res) => {
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("blog", { posts });
+});
+
+app.get("/blog/:slug", async (req, res) => {
+  const post = await prisma.blogPost.findUnique({
+    where: { slug: req.params.slug },
+  });
   if (!post) return res.status(404).send("Post not found");
   res.render("blog-post", { post });
 });
@@ -140,8 +184,51 @@ app.get("/signin", (req, res) => {
   res.render("signin");
 });
 
-app.get("/store-locator", (req, res) => {
-  res.render("store-locator");
+app.get("/store-locator", async (req, res) => {
+  const stores = await prisma.store.findMany();
+  res.render("store-locator", { stores });
+});
+
+app.post("/checkout", async (req, res) => {
+  const cartItems = JSON.parse(req.body.cartData);
+
+  if (!cartItems || cartItems.length === 0) {
+    return res.redirect("/cart");
+  }
+
+  const productIds = cartItems.map((item) => item.id);
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+  });
+
+  let total = 0;
+  const orderItemsData = cartItems
+    .map((cartItem) => {
+      const product = products.find((p) => p.id === cartItem.id);
+      if (!product) return null;
+      total += product.price * cartItem.qty;
+      return { productId: product.id, qty: cartItem.qty, price: product.price };
+    })
+    .filter(Boolean);
+
+  const order = await prisma.order.create({
+    data: {
+      total,
+      status: "pending",
+      items: { create: orderItemsData },
+    },
+  });
+
+  res.redirect(`/order-confirmation/${order.id}`);
+});
+
+app.get("/order-confirmation/:id", async (req, res) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.params.id },
+    include: { items: { include: { product: true } } },
+  });
+  if (!order) return res.status(404).send("Order not found");
+  res.render("order-confirmation", { order });
 });
 
 // --- START SERVER ---

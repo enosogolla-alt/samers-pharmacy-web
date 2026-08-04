@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<section class="max-w-2xl mx-auto px-6 py-16 text-center" x-data x-init="localStorage.removeItem('samers_cart'); updateCartBadge();">
+
+  <span class="w-16 h-16 rounded-full bg-forest-700/10 flex items-center justify-center mx-auto mb-6">
+    <svg class="w-8 h-8 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+  </span>
+
+  <h1 class="font-display text-3xl font-semibold text-ink-900 mb-2">Order Confirmed!</h1>
+  <p class="text-ink-900/60 mb-8">Thank you — your order has been received and is being processed.</p>
+
+  <div class="bg-white border border-mint-200 rounded-2xl p-6 text-left mb-8">
+    <div class="flex justify-between items-center mb-4 pb-4 border-b border-mint-200">
+      <span class="text-sm text-ink-900/50">Order ID</span>
+      <span class="font-mono text-sm font-medium text-ink-900"><%= order.id %></span>
+    </div>
+
+    <% order.items.forEach(function(item) { %>
+      <div class="flex justify-between items-center py-2 text-sm">
+        <span class="text-ink-900"><%= item.product.name %> &times; <%= item.qty %></span>
+        <span class="text-ink-900/70">KSh <%= (item.price * item.qty).toLocaleString() %></span>
+      </div>
+    <% }); %>
+
+    <div class="flex justify-between items-baseline mt-4 pt-4 border-t border-mint-200">
+      <span class="font-semibold text-ink-900">Total</span>
+      <span class="text-gold-500 font-bold text-xl">KSh <%= order.total.toLocaleString() %></span>
+    </div>
+  </div>
+
+  <a href="/products" class="inline-flex px-6 py-3 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+    Continue Shopping
+  </a>
+</section>
+
+<%- include('partials/bottom-nav') %>
+<%- include('partials/footer') %>

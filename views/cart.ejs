@@ -159,12 +159,21 @@
       ></span>
     </div>
 
-    <a
-      href="#"
-      class="block text-center py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors mb-3"
+    <form
+      action="/checkout"
+      method="POST"
+      x-data
+      @submit="$el.querySelector('[name=cartData]').value = JSON.stringify(getCart())"
     >
-      Proceed to Checkout
-    </a>
+      <input type="hidden" name="cartData" />
+      <button
+        type="submit"
+        class="block w-full text-center py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors mb-3"
+      >
+        Proceed to Checkout
+      </button>
+    </form>
+
     <a
       href="/products"
       class="block text-center text-forest-700 text-sm font-medium hover:text-ink-900"
