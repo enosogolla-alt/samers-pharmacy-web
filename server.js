@@ -181,7 +181,46 @@ app.get("/blog/:slug", async (req, res) => {
 });
 
 app.get("/signin", (req, res) => {
-  res.render("signin");
+  res.render("signin", { error: req.query.error || null });
+});
+
+app.post("/signup", async (req, res) => {
+  const { fullName, phone, password } = req.body;
+
+  const existing = await prisma.user.findUnique({ where: { phone } });
+  if (existing) {
+    return res.redirect("/signin?error=Phone number already registered");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await prisma.user.create({
+    data: { name: fullName, phone, password: hashedPassword },
+  });
+
+  req.session.user = { id: user.id, name: user.name, phone: user.phone };
+  res.redirect("/");
+});
+
+app.post("/signin", async (req, res) => {
+  const { phone, password } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { phone } });
+  if (!user) {
+    return res.redirect("/signin?error=Invalid phone or password");
+  }
+
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    return res.redirect("/signin?error=Invalid phone or password");
+  }
+
+  req.session.user = { id: user.id, name: user.name, phone: user.phone };
+  res.redirect("/");
+});
+
+app.post("/signout", (req, res) => {
+  req.session.destroy(() => res.redirect("/"));
 });
 
 app.get("/store-locator", async (req, res) => {
