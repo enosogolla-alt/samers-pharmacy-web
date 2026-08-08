@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/orders' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Orders', pageSubtitle: orders.length + ' orders' }) %>
+
+    <main class="p-8">
+      <div class="bg-white border border-mint-200 rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-mint-50 border-b border-mint-200">
+            <tr class="text-left text-ink-900/60 text-xs uppercase tracking-wide">
+              <th class="px-5 py-3 font-semibold">Order ID</th>
+              <th class="px-5 py-3 font-semibold">Items</th>
+              <th class="px-5 py-3 font-semibold">Total</th>
+              <th class="px-5 py-3 font-semibold">Status</th>
+              <th class="px-5 py-3 font-semibold">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-mint-200">
+            <% if (orders.length === 0) { %>
+              <tr><td colspan="5" class="px-5 py-8 text-center text-ink-900/40">No orders yet.</td></tr>
+            <% } %>
+            <% orders.forEach(function(o) { %>
+              <tr class="hover:bg-mint-50/50 transition-colors">
+                <td class="px-5 py-3.5 font-mono text-xs text-ink-900/60"><%= o.id.slice(0, 12) %>...</td>
+                <td class="px-5 py-3.5 text-ink-900/70"><%= o.items.length %> item<%= o.items.length !== 1 ? 's' : '' %></td>
+                <td class="px-5 py-3.5 font-medium text-ink-900">KSh <%= o.total.toLocaleString() %></td>
+                <td class="px-5 py-3.5">
+                  <span class="px-2.5 py-1 rounded-capsule bg-gold-500/10 text-gold-500 text-xs font-semibold capitalize"><%= o.status %></span>
+                </td>
+                <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(o.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

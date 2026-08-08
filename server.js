@@ -317,6 +317,50 @@ app.post("/admin/products/:id/adjust-stock", requireAdmin, async (req, res) => {
   res.redirect("/admin/products");
 });
 
+app.get("/admin/categories", requireAdmin, async (req, res) => {
+  const categories = await prisma.category.findMany({
+    include: { _count: { select: { products: true } } },
+  });
+  const brands = await prisma.brand.findMany({
+    include: { _count: { select: { products: true } } },
+  });
+  res.render("admin/categories", { categories, brands });
+});
+
+app.get("/admin/orders", requireAdmin, async (req, res) => {
+  const orders = await prisma.order.findMany({
+    include: { items: true },
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("admin/orders", { orders });
+});
+
+app.get("/admin/prescriptions", requireAdmin, async (req, res) => {
+  const prescriptions = await prisma.prescription.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("admin/prescriptions", { prescriptions });
+});
+
+app.get("/admin/consultations", requireAdmin, async (req, res) => {
+  const consultations = await prisma.consultationBooking.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("admin/consultations", { consultations });
+});
+
+app.get("/admin/blog", requireAdmin, async (req, res) => {
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("admin/blog", { posts });
+});
+
+app.get("/admin/stores", requireAdmin, async (req, res) => {
+  const stores = await prisma.store.findMany();
+  res.render("admin/stores", { stores });
+});
+
 app.get("/admin", requireAdmin, async (req, res) => {
   const [productCount, orderCount, pendingPrescriptions, pendingConsultations] =
     await Promise.all([

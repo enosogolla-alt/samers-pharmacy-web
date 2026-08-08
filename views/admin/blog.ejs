@@ -1,0 +1,49 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/blog' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Blog', pageSubtitle: posts.length + ' published articles' }) %>
+
+    <main class="p-8">
+      <div class="flex justify-end mb-6">
+        <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          New Post
+        </a>
+      </div>
+
+      <div class="bg-white border border-mint-200 rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-mint-50 border-b border-mint-200">
+            <tr class="text-left text-ink-900/60 text-xs uppercase tracking-wide">
+              <th class="px-5 py-3 font-semibold">Title</th>
+              <th class="px-5 py-3 font-semibold">Slug</th>
+              <th class="px-5 py-3 font-semibold">Published</th>
+              <th class="px-5 py-3 font-semibold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-mint-200">
+            <% if (posts.length === 0) { %>
+              <tr><td colspan="4" class="px-5 py-8 text-center text-ink-900/40">No blog posts yet.</td></tr>
+            <% } %>
+            <% posts.forEach(function(p) { %>
+              <tr class="hover:bg-mint-50/50 transition-colors">
+                <td class="px-5 py-3.5 font-medium text-ink-900"><%= p.title %></td>
+                <td class="px-5 py-3.5 text-ink-900/50 font-mono text-xs"><%= p.slug %></td>
+                <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                <td class="px-5 py-3.5 text-right">
+                  <a href="/blog/<%= p.slug %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900">View Live</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

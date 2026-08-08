@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/consultations' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Consultations', pageSubtitle: consultations.length + ' booking requests' }) %>
+
+    <main class="p-8">
+      <div class="bg-white border border-mint-200 rounded-2xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-mint-50 border-b border-mint-200">
+            <tr class="text-left text-ink-900/60 text-xs uppercase tracking-wide">
+              <th class="px-5 py-3 font-semibold">Name</th>
+              <th class="px-5 py-3 font-semibold">Contact</th>
+              <th class="px-5 py-3 font-semibold">Topic</th>
+              <th class="px-5 py-3 font-semibold">Mode</th>
+              <th class="px-5 py-3 font-semibold">When / Where</th>
+              <th class="px-5 py-3 font-semibold">Submitted</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-mint-200">
+            <% if (consultations.length === 0) { %>
+              <tr><td colspan="6" class="px-5 py-8 text-center text-ink-900/40">No consultation requests yet.</td></tr>
+            <% } %>
+            <% consultations.forEach(function(c) { %>
+              <tr class="hover:bg-mint-50/50 transition-colors">
+                <td class="px-5 py-3.5 font-medium text-ink-900"><%= c.fullName %></td>
+                <td class="px-5 py-3.5 text-ink-900/70"><%= c.phone %></td>
+                <td class="px-5 py-3.5 text-ink-900/70"><%= c.topic %></td>
+                <td class="px-5 py-3.5">
+                  <span class="px-2.5 py-1 rounded-capsule <%= c.mode === 'online' ? 'bg-forest-700/10 text-forest-700' : 'bg-gold-500/10 text-gold-500' %> text-xs font-semibold capitalize"><%= c.mode %></span>
+                </td>
+                <td class="px-5 py-3.5 text-ink-900/70">
+                  <% if (c.mode === 'online') { %>
+                    <%= c.date || '—' %> <%= c.time || '' %>
+                  <% } else { %>
+                    <%= c.branch || '—' %>
+                  <% } %>
+                </td>
+                <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(c.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

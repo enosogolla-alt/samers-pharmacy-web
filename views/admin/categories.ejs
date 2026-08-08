@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/categories' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Categories & Brands', pageSubtitle: categories.length + ' categories, ' + brands.length + ' brands' }) %>
+
+    <main class="p-8" x-data="{ tab: 'categories' }">
+
+      <div class="flex gap-2 p-1 bg-white border border-mint-200 rounded-capsule w-fit mb-6">
+        <button @click="tab = 'categories'" class="px-5 py-2 rounded-capsule text-sm font-semibold transition-colors" :class="tab === 'categories' ? 'bg-forest-700 text-white' : 'text-ink-900/60'">Categories</button>
+        <button @click="tab = 'brands'" class="px-5 py-2 rounded-capsule text-sm font-semibold transition-colors" :class="tab === 'brands' ? 'bg-forest-700 text-white' : 'text-ink-900/60'">Brands</button>
+      </div>
+
+      <div x-show="tab === 'categories'">
+        <div class="bg-white border border-mint-200 rounded-2xl overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-mint-50 border-b border-mint-200">
+              <tr class="text-left text-ink-900/60 text-xs uppercase tracking-wide">
+                <th class="px-5 py-3 font-semibold">Name</th>
+                <th class="px-5 py-3 font-semibold">Slug</th>
+                <th class="px-5 py-3 font-semibold">Products</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-mint-200">
+              <% categories.forEach(function(c) { %>
+                <tr class="hover:bg-mint-50/50 transition-colors">
+                  <td class="px-5 py-3.5 font-medium text-ink-900"><%= c.name %></td>
+                  <td class="px-5 py-3.5 text-ink-900/50 font-mono text-xs"><%= c.slug %></td>
+                  <td class="px-5 py-3.5 text-ink-900/70"><%= c._count.products %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div x-show="tab === 'brands'" x-cloak>
+        <div class="bg-white border border-mint-200 rounded-2xl overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-mint-50 border-b border-mint-200">
+              <tr class="text-left text-ink-900/60 text-xs uppercase tracking-wide">
+                <th class="px-5 py-3 font-semibold">Name</th>
+                <th class="px-5 py-3 font-semibold">Slug</th>
+                <th class="px-5 py-3 font-semibold">Products</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-mint-200">
+              <% brands.forEach(function(b) { %>
+                <tr class="hover:bg-mint-50/50 transition-colors">
+                  <td class="px-5 py-3.5 font-medium text-ink-900"><%= b.name %></td>
+                  <td class="px-5 py-3.5 text-ink-900/50 font-mono text-xs"><%= b.slug %></td>
+                  <td class="px-5 py-3.5 text-ink-900/70"><%= b._count.products %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
