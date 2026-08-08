@@ -24,6 +24,14 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
+const productUploadDir = path.join(__dirname, "public", "uploads", "products");
+if (!fs.existsSync(productUploadDir)) fs.mkdirSync(productUploadDir, { recursive: true });
+
+const productStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, productUploadDir),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+});
+const uploadProductImage = multer({ storage: productStorage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -47,6 +55,14 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   next();
 });
+
+function requireAdmin(req, res, next) {
+  const user = req.session.user;
+  if (!user || (user.role !== "admin" && user.role !== "pharmacist")) {
+    return res.redirect("/signin");
+  }
+  next();
+}
 
 // --- ROUTES ---
 // (routes will go here as we build real pages, e.g. app.get('/', ...) for shop.ejs)
@@ -184,38 +200,189 @@ app.get("/signin", (req, res) => {
   res.render("signin", { error: req.query.error || null });
 });
 
-app.post("/signup", async (req, res) => {
-  const { fullName, phone, password } = req.body;
+app.get("/admin/products", requireAdmin, async (req, res) => {
+  const products = await prisma.product.findMany({
+    include: { category: true },
+    orderBy: { createdAt: "desc" },
+  });
+  res.render("admin/products", { products });
+});
 
-  const existing = await prisma.user.findUnique({ where: { phone } });
-  if (existing) {
+app.get("/admin/products/new", requireAdmin, async (req, res) => {
+  const categories = await prisma.category.findMany();
+  const brands = await prisma.brand.findMany();
+  res.render("admin/product-form", { product: null, categories, brands });
+});
+
+app.post("/admin/products", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+  const data = req.body;
+  const imageUrl = req.file ? `/uploads/products/${req.file.filename}` : null;
+  const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+  await prisma.product.create({
+    data: {
+      name: data.name,
+      slug,
+      description: data.description || null,
+      price: parseInt(data.price),
+      oldPrice: data.oldPrice ? parseInt(data.oldPrice) : null,
+      discountLabel: data.discountLabel || null,
+      stock: parseInt(data.stock) || 0,
+      reorderLevel: parseInt(data.reorderLevel) || 10,
+      featured: data.featured === "on",
+      dosageForm: data.dosageForm || null,
+      strength: data.strength || null,
+      packSize: data.packSize || null,
+      activeIngredient: data.activeIngredient || null,
+      manufacturer: data.manufacturer || null,
+      batchNumber: data.batchNumber || null,
+      expiryDate: data.expiryDate ? new Date(data.expiryDate) : null,
+      storageConditions: data.storageConditions || null,
+requiresPrescription: data.requiresPrescription === "on",
+      categoryId: data.categoryId || null,
+      brandId: data.brandId || null,
+      imageUrl,
+    },
+  });
+
+  res.redirect("/admin/products");
+});
+
+app.get("/admin/products/:id/edit", requireAdmin, async (req, res) => {
+  const product = await prisma.product.findUnique({ where: { id: req.params.id } });
+  if (!product) return res.status(404).send("Product not found");
+  const categories = await prisma.category.findMany();
+  const brands = await prisma.brand.findMany();
+  res.render("admin/product-form", { product, categories, brands });
+});
+
+app.post("/admin/products/:id/edit", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+  const data = req.body;
+  const updateData = {
+      name: data.name,
+      description: data.description || null,
+      price: parseInt(data.price),
+      oldPrice: data.oldPrice ? parseInt(data.oldPrice) : null,
+      discountLabel: data.discountLabel || null,
+      reorderLevel: parseInt(data.reorderLevel) || 10,
+      featured: data.featured === "on",
+      dosageForm: data.dosageForm || null,
+      strength: data.strength || null,
+      packSize: data.packSize || null,
+      activeIngredient: data.activeIngredient || null,
+      manufacturer: data.manufacturer || null,
+      batchNumber: data.batchNumber || null,
+      expiryDate: data.expiryDate ? new Date(data.expiryDate) : null,
+      storageConditions: data.storageConditions || null,
+     requiresPrescription: data.requiresPrescription === "on",
+      categoryId: data.categoryId || null,
+      brandId: data.brandId || null,
+  };
+  if (req.file) {
+    updateData.imageUrl = `/uploads/products/${req.file.filename}`;
+  }
+
+  await prisma.product.update({
+    where: { id: req.params.id },
+    data: updateData,
+  });
+
+ res.redirect("/admin/products");
+});
+
+app.post("/admin/products/:id/adjust-stock", requireAdmin, async (req, res) => {
+  const { reason, newQty, note } = req.body;
+  const product = await prisma.product.findUnique({ where: { id: req.params.id } });
+  if (!product) return res.status(404).send("Product not found");
+
+  const previousQty = product.stock;
+  const updatedQty = parseInt(newQty);
+
+  await prisma.product.update({
+    where: { id: req.params.id },
+    data: { stock: updatedQty },
+  });
+
+  await prisma.stockLog.create({
+    data: {
+      productId: product.id,
+      changedBy: req.session.user.name,
+      previousQty,
+      newQty: updatedQty,
+      reason,
+      note: note || null,
+    },
+  });
+
+  res.redirect("/admin/products");
+});
+
+app.get("/admin", requireAdmin, async (req, res) => {
+  const [productCount, orderCount, pendingPrescriptions, pendingConsultations] =
+    await Promise.all([
+      prisma.product.count(),
+      prisma.order.count(),
+      prisma.prescription.count({ where: { status: "submitted" } }),
+      prisma.consultationBooking.count(),
+    ]);
+  res.render("admin/overview", {
+    productCount,
+    orderCount,
+    pendingPrescriptions,
+    pendingConsultations,
+  });
+});
+
+app.post("/signup", async (req, res) => {
+  const { fullName, email, phone, password } = req.body;
+
+  const existingEmail = await prisma.user.findUnique({ where: { email } });
+  if (existingEmail) {
+    return res.redirect("/signin?error=Email already registered");
+  }
+  const existingPhone = await prisma.user.findUnique({ where: { phone } });
+  if (existingPhone) {
     return res.redirect("/signin?error=Phone number already registered");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await prisma.user.create({
-    data: { name: fullName, phone, password: hashedPassword },
+    data: { name: fullName, email, phone, password: hashedPassword },
   });
 
-  req.session.user = { id: user.id, name: user.name, phone: user.phone };
+  req.session.user = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
   res.redirect("/");
 });
 
 app.post("/signin", async (req, res) => {
-  const { phone, password } = req.body;
+  const { email, password } = req.body;
 
-  const user = await prisma.user.findUnique({ where: { phone } });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return res.redirect("/signin?error=Invalid phone or password");
+    return res.redirect("/signin?error=Invalid email or password");
   }
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    return res.redirect("/signin?error=Invalid phone or password");
+    return res.redirect("/signin?error=Invalid email or password");
   }
 
-  req.session.user = { id: user.id, name: user.name, phone: user.phone };
+  req.session.user = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  if (user.role === "admin" || user.role === "pharmacist") {
+    return res.redirect("/admin");
+  }
   res.redirect("/");
 });
 
@@ -274,4 +441,7 @@ app.get("/order-confirmation/:id", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
+
+
 });
+

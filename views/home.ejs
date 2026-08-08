@@ -71,7 +71,11 @@
       <a href="/product/<%= item.slug %>" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-md transition-shadow flex flex-col h-full">
         <div class="relative rounded-xl h-44 mb-5 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
           <% if (item.discountLabel) { %><span class="absolute top-3 left-3 px-2.5 py-1 rounded-capsule bg-coral-500 text-white text-[10px] font-bold"><%= item.discountLabel %></span><% } %>
-          <svg class="w-14 h-14 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+         <% if (item.imageUrl) { %>
+            <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="w-full h-full object-contain p-4">
+          <% } else { %>
+            <svg class="w-14 h-14 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          <% } %>
         </div>
         <p class="text-sm font-medium text-ink-900 mb-2 leading-snug flex-1"><%= item.name %></p>
         <div class="flex items-baseline gap-1.5 mb-3 flex-wrap">
@@ -264,7 +268,11 @@
     <% featuredProducts.forEach(function(item) { %>
       <a href="/product/<%= item.slug %>" class="min-w-[240px] snap-start bg-white border border-mint-200 rounded-2xl p-5 hover:shadow-lg transition-shadow">
         <div class="relative rounded-xl h-40 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
-          <svg class="w-12 h-12 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          <% if (item.imageUrl) { %>
+            <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="w-full h-full object-contain p-4">
+          <% } else { %>
+            <svg class="w-12 h-12 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          <% } %>
         </div>
         <div class="flex items-center gap-1 mb-1.5">
           <svg class="w-3.5 h-3.5 text-gold-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>

@@ -28,30 +28,13 @@
       <div
         class="bg-white border border-mint-200 rounded-2xl p-4 flex gap-4 items-center"
       >
-        <div
-          class="rounded-xl w-20 h-20 shrink-0 flex items-center justify-center overflow-hidden"
-          style="
-            background: radial-gradient(
-              circle at 50% 40%,
-              #ffffff 0%,
-              #f3f8f5 65%,
-              #e9f7f2 100%
-            );
-          "
-        >
-          <svg
-            class="w-8 h-8 text-mint-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"
-            />
-          </svg>
+        <div class="rounded-xl w-20 h-20 shrink-0 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+          <template x-if="item.imageUrl">
+            <img :src="item.imageUrl" class="w-full h-full object-contain p-2">
+          </template>
+          <template x-if="!item.imageUrl">
+            <svg class="w-8 h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          </template>
         </div>
 
         <div class="flex-1 min-w-0">

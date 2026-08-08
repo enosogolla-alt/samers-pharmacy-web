@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Overview', pageSubtitle: 'Welcome back, ' + currentUser.name }) %>
+
+    <main class="p-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-10 h-10 rounded-xl bg-forest-700/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-ink-900"><%= productCount %></p>
+          <p class="text-sm text-ink-900/60">Total Products</p>
+        </div>
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l.9 4.5m0 0L6.6 15.6a1.5 1.5 0 001.48 1.4h9.35a1.5 1.5 0 001.48-1.24l1.13-6.26H4.65"/></svg>
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-ink-900"><%= orderCount %></p>
+          <p class="text-sm text-ink-900/60">Total Orders</p>
+        </div>
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-10 h-10 rounded-xl bg-coral-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-coral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-ink-900"><%= pendingPrescriptions %></p>
+          <p class="text-sm text-ink-900/60">Pending Prescriptions</p>
+        </div>
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-10 h-10 rounded-xl bg-forest-700/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/></svg>
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-ink-900"><%= pendingConsultations %></p>
+          <p class="text-sm text-ink-900/60">Consultation Requests</p>
+        </div>
+
+      </div>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-8 text-center">
+        <p class="text-ink-900/50">More detailed activity and reporting will appear here as the dashboard grows.</p>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

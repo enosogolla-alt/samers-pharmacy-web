@@ -1,0 +1,158 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/products' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', {
+      pageTitle: product ? 'Edit Product' : 'Add Product',
+      pageSubtitle: product ? product.name : 'Create a new inventory item'
+    }) %>
+
+    <main class="p-8 max-w-4xl">
+      <form action="<%= product ? '/admin/products/' + product.id + '/edit' : '/admin/products' %>" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+        <!-- Basic Info -->
+<div class="bg-white border border-mint-200 rounded-2xl p-6">
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-5">Basic Information</h2>
+
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-ink-900 mb-1.5">Product Image</label>
+            <div class="flex items-center gap-4">
+              <div class="w-24 h-24 rounded-xl flex items-center justify-center overflow-hidden shrink-0" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+                <% if (product && product.imageUrl) { %>
+                  <img src="<%= product.imageUrl %>" alt="" class="w-full h-full object-contain">
+                <% } else { %>
+                  <svg class="w-8 h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+                <% } %>
+              </div>
+              <div>
+                <input type="file" name="image" accept="image/*" class="text-sm text-ink-900/70">
+                <p class="text-xs text-ink-900/40 mt-1">JPG or PNG, max 5MB. <% if (product && product.imageUrl) { %>Leave empty to keep the current photo.<% } %></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-5">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Product Name</label>
+              <input type="text" name="name" required value="<%= product ? product.name : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Description</label>
+              <textarea name="description" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"><%= product ? (product.description || '') : '' %></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Category</label>
+              <select name="categoryId" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+                <option value="">— None —</option>
+                <% categories.forEach(function(c) { %>
+                  <option value="<%= c.id %>" <%= product && product.categoryId === c.id ? 'selected' : '' %>><%= c.name %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Brand</label>
+              <select name="brandId" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+                <option value="">— None —</option>
+                <% brands.forEach(function(b) { %>
+                  <option value="<%= b.id %>" <%= product && product.brandId === b.id ? 'selected' : '' %>><%= b.name %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing & Stock -->
+        <div class="bg-white border border-mint-200 rounded-2xl p-6">
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-5">Pricing &amp; Stock</h2>
+          <div class="grid md:grid-cols-3 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Price (KSh)</label>
+              <input type="number" name="price" required min="0" value="<%= product ? product.price : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Old Price <span class="text-ink-900/40 font-normal">(optional)</span></label>
+              <input type="number" name="oldPrice" min="0" value="<%= product && product.oldPrice ? product.oldPrice : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Discount Label <span class="text-ink-900/40 font-normal">(optional)</span></label>
+              <input type="text" name="discountLabel" placeholder="e.g. -15%" value="<%= product && product.discountLabel ? product.discountLabel : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <% if (!product) { %>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Initial Stock</label>
+              <input type="number" name="stock" required min="0" value="0" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <% } %>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Reorder Level</label>
+              <input type="number" name="reorderLevel" min="0" value="<%= product ? product.reorderLevel : 10 %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div class="flex items-center gap-2 pt-7">
+              <input type="checkbox" name="featured" id="featured" <%= product && product.featured ? 'checked' : '' %> class="w-4 h-4 rounded border-mint-200 text-forest-700 focus:ring-forest-700/20">
+              <label for="featured" class="text-sm font-medium text-ink-900">Featured on homepage</label>
+            </div>
+          </div>
+          <% if (product) { %>
+            <p class="text-xs text-ink-900/50 mt-3">Current stock: <strong><%= product.stock %></strong> — to change stock quantity, use the "Adjust Stock" action from the product list (keeps an audit log).</p>
+          <% } %>
+        </div>
+
+        <!-- Pharmaceutical Details -->
+        <div class="bg-white border border-mint-200 rounded-2xl p-6">
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-5">Pharmaceutical Details</h2>
+          <div class="grid md:grid-cols-3 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Dosage Form</label>
+              <input type="text" name="dosageForm" placeholder="e.g. Tablet" value="<%= product && product.dosageForm ? product.dosageForm : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Strength</label>
+              <input type="text" name="strength" placeholder="e.g. 15mg" value="<%= product && product.strength ? product.strength : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Pack Size</label>
+              <input type="text" name="packSize" placeholder="e.g. Pack of 30" value="<%= product && product.packSize ? product.packSize : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Active Ingredient</label>
+              <input type="text" name="activeIngredient" value="<%= product && product.activeIngredient ? product.activeIngredient : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Manufacturer</label>
+              <input type="text" name="manufacturer" value="<%= product && product.manufacturer ? product.manufacturer : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Batch Number</label>
+              <input type="text" name="batchNumber" value="<%= product && product.batchNumber ? product.batchNumber : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Expiry Date</label>
+              <input type="date" name="expiryDate" value="<%= product && product.expiryDate ? new Date(product.expiryDate).toISOString().split('T')[0] : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Storage Conditions</label>
+              <input type="text" name="storageConditions" placeholder="e.g. Store below 25°C in a dry place" value="<%= product && product.storageConditions ? product.storageConditions : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            </div>
+            <div class="flex items-center gap-2 pt-7">
+              <input type="checkbox" name="requiresPrescription" id="requiresPrescription" <%= product && product.requiresPrescription ? 'checked' : '' %> class="w-4 h-4 rounded border-mint-200 text-forest-700 focus:ring-forest-700/20">
+              <label for="requiresPrescription" class="text-sm font-medium text-ink-900">Requires a prescription</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button type="submit" class="px-6 py-3 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+            <%= product ? 'Save Changes' : 'Add Product' %>
+          </button>
+          <a href="/admin/products" class="text-sm font-medium text-ink-900/60 hover:text-ink-900">Cancel</a>
+        </div>
+
+      </form>
+    </main>
+  </div>
+</div>
+</body>
+</html>

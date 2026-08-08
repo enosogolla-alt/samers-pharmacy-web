@@ -12,8 +12,8 @@
 <section class="max-w-7xl mx-auto px-6 py-10">
   <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
     <% conditions.forEach(function(c) { %>
-      <a href="/condition/<%= c.slug %>" class="bg-white border border-mint-200 rounded-2xl p-5 flex items-center justify-between gap-3 hover:border-forest-700 hover:shadow-md transition-all group">
-        <span class="font-semibold text-ink-900 text-sm"><%= c.name %></span>
+     <a href="/condition/<%= c.slug %>" class="bg-white border border-mint-200 rounded-2xl p-4 md:p-5 flex items-center justify-between gap-2 hover:border-forest-700 hover:shadow-md transition-all group min-w-0">
+        <span class="font-semibold text-ink-900 text-xs md:text-sm break-words min-w-0"><%= c.name %></span>
         <svg class="w-4 h-4 text-ink-900/30 group-hover:text-forest-700 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
     <% }); %>

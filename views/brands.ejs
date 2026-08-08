@@ -12,8 +12,8 @@
 <section class="max-w-7xl mx-auto px-6 py-10">
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
    <% brands.forEach(function(b) { %>
-      <a href="/brand/<%= b.slug %>" class="bg-white border border-mint-200 rounded-2xl p-6 flex items-center justify-center text-center hover:border-forest-700 hover:shadow-md transition-all h-24">
-        <span class="font-semibold text-ink-900 text-sm"><%= b.name %></span>
+      <a href="/brand/<%= b.slug %>" class="bg-white border border-mint-200 rounded-2xl p-4 md:p-6 flex items-center justify-center text-center hover:border-forest-700 hover:shadow-md transition-all h-24 min-w-0">
+        <span class="font-semibold text-ink-900 text-xs md:text-sm break-words min-w-0"><%= b.name %></span>
       </a>
     <% }); %>
   </div>

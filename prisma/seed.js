@@ -2,41 +2,38 @@ require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
   // Categories
-  const categories = await Promise.all([
-    prisma.category.create({
-      data: { name: "Medicines & Prescriptions", slug: "medicines" },
-    }),
-    prisma.category.create({
-      data: { name: "Vitamins & Supplements", slug: "vitamins-supplements" },
-    }),
-    prisma.category.create({
-      data: { name: "Skincare & Beauty", slug: "skincare-beauty" },
-    }),
-    prisma.category.create({
-      data: { name: "Mother & Baby", slug: "mother-baby" },
-    }),
-    prisma.category.create({
-      data: { name: "Medical Devices", slug: "medical-devices" },
-    }),
-    prisma.category.create({
-      data: { name: "Personal Care", slug: "personal-care" },
-    }),
-  ]);
+  const categoryData = [
+    { name: "Medicines & Prescriptions", slug: "medicines" },
+    { name: "Vitamins & Supplements", slug: "vitamins-supplements" },
+    { name: "Skincare & Beauty", slug: "skincare-beauty" },
+    { name: "Mother & Baby", slug: "mother-baby" },
+    { name: "Medical Devices", slug: "medical-devices" },
+    { name: "Personal Care", slug: "personal-care" },
+  ];
+  const categories = [];
+  for (const data of categoryData) {
+    categories.push(await prisma.category.create({ data }));
+  }
 
   // Brands
-  const brands = await Promise.all([
-    prisma.brand.create({ data: { name: "CeraVe", slug: "cerave" } }),
-    prisma.brand.create({
-      data: { name: "La Roche-Posay", slug: "la-roche-posay" },
-    }),
-    prisma.brand.create({ data: { name: "Centrum", slug: "centrum" } }),
-    prisma.brand.create({ data: { name: "Panadol", slug: "panadol" } }),
-  ]);
+  const brandData = [
+    { name: "CeraVe", slug: "cerave" },
+    { name: "La Roche-Posay", slug: "la-roche-posay" },
+    { name: "Centrum", slug: "centrum" },
+    { name: "Panadol", slug: "panadol" },
+  ];
+  const brands = [];
+  for (const data of brandData) {
+    brands.push(await prisma.brand.create({ data }));
+  }
 
   // Products
   await prisma.product.create({

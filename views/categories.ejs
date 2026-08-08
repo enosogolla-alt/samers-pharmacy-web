@@ -26,12 +26,12 @@
       { name: 'IV Therapy', slug: 'iv-therapy', bg: 'bg-[#EAFBF3]', icon: 'M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4' },
     ]; %>
     <% categories.forEach(function(cat) { %>
-      <a href="/category/<%= cat.slug %>" class="<%= cat.bg %> rounded-2xl p-5 flex items-center justify-between gap-3 hover:shadow-md transition-shadow group">
-        <div class="flex items-center gap-3">
-          <span class="w-11 h-11 rounded-xl bg-white flex items-center justify-center shrink-0">
+     <a href="/category/<%= cat.slug %>" class="<%= cat.bg %> rounded-2xl p-4 md:p-5 flex items-center justify-between gap-2 hover:shadow-md transition-shadow group min-w-0">
+        <div class="flex items-center gap-2 md:gap-3 min-w-0">
+          <span class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-white flex items-center justify-center shrink-0">
             <svg class="w-5 h-5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="<%= cat.icon %>"/></svg>
           </span>
-          <span class="font-semibold text-ink-900 text-sm leading-snug"><%= cat.name %></span>
+          <span class="font-semibold text-ink-900 text-xs md:text-sm leading-snug break-words min-w-0"><%= cat.name %></span>
         </div>
         <svg class="w-4 h-4 text-ink-900/30 group-hover:text-forest-700 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
