@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/orders' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Order Details', pageSubtitle: order.id }) %>
+
+    <main class="p-8 max-w-3xl">
+
+      <a href="/admin/orders" class="inline-flex items-center gap-1.5 text-sm font-medium text-forest-700 hover:text-ink-900 mb-6">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Orders
+      </a>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6 mb-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-5">Items</h2>
+        <div class="space-y-3">
+          <% order.items.forEach(function(item) { %>
+            <div class="flex justify-between items-center py-2 border-b border-mint-200 last:border-0">
+              <div>
+                <p class="font-medium text-ink-900"><%= item.product.name %></p>
+                <p class="text-xs text-ink-900/50">Qty: <%= item.qty %> &times; KSh <%= item.price.toLocaleString() %></p>
+              </div>
+              <span class="font-semibold text-ink-900">KSh <%= (item.price * item.qty).toLocaleString() %></span>
+            </div>
+          <% }); %>
+        </div>
+        <div class="flex justify-between items-center pt-4 mt-2 border-t border-mint-200">
+          <span class="font-semibold text-ink-900">Total</span>
+          <span class="text-gold-500 font-bold text-lg">KSh <%= order.total.toLocaleString() %></span>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white border border-mint-200 rounded-2xl p-6">
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Order Info</h2>
+          <div class="space-y-2 text-sm">
+            <p class="text-ink-900/70"><strong class="text-ink-900">Channel:</strong> <span class="capitalize"><%= (order.channel || 'online').replace('_', ' ') %></span></p>
+            <p class="text-ink-900/70"><strong class="text-ink-900">Payment:</strong> <%= order.paymentMethod || 'Not specified' %></p>
+            <% if (order.servedBy) { %><p class="text-ink-900/70"><strong class="text-ink-900">Served by:</strong> <%= order.servedBy %></p><% } %>
+            <p class="text-ink-900/70"><strong class="text-ink-900">Placed:</strong> <%= new Date(order.createdAt).toLocaleString('en-GB') %></p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-6">
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Update Status</h2>
+          <form action="/admin/orders/<%= order.id %>/status" method="POST" class="flex gap-3">
+            <select name="status" class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+              <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+              <option value="preparing" <%= order.status === 'preparing' ? 'selected' : '' %>>Preparing</option>
+              <option value="out_for_delivery" <%= order.status === 'out_for_delivery' ? 'selected' : '' %>>Out for Delivery</option>
+              <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+            </select>
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Save</button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -335,6 +335,84 @@ app.get("/admin/orders", requireAdmin, async (req, res) => {
   res.render("admin/orders", { orders });
 });
 
+app.get("/admin/orders/new-sale", requireAdmin, async (req, res) => {
+  const products = await prisma.product.findMany({ orderBy: { name: "asc" } });
+  res.render("admin/new-sale", { products });
+});
+
+app.post("/admin/orders/new-sale", requireAdmin, async (req, res) => {
+  const lineCount = parseInt(req.body.lineCount);
+  const products = await prisma.product.findMany();
+
+  let total = 0;
+  const orderItemsData = [];
+  const stockUpdates = [];
+
+  for (let i = 0; i < lineCount; i++) {
+    const productId = req.body[`productId_${i}`];
+    const qty = parseInt(req.body[`qty_${i}`]);
+    if (!productId || !qty) continue;
+
+    const product = products.find((p) => p.id === productId);
+    if (!product) continue;
+
+    total += product.price * qty;
+    orderItemsData.push({ productId: product.id, qty, price: product.price });
+    stockUpdates.push({ id: product.id, newStock: product.stock - qty });
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      total,
+      status: "delivered",
+      channel: "in_store",
+      paymentMethod: req.body.paymentMethod,
+      servedBy: req.body.servedBy,
+      items: { create: orderItemsData },
+    },
+  });
+
+  for (const update of stockUpdates) {
+    const product = products.find((p) => p.id === update.id);
+    await prisma.product.update({ where: { id: update.id }, data: { stock: update.newStock } });
+    await prisma.stockLog.create({
+      data: {
+        productId: update.id,
+        changedBy: req.body.servedBy,
+        previousQty: product.stock,
+        newQty: update.newStock,
+        reason: "sale",
+        note: `In-store sale, Order #${order.id.slice(0, 8)}`,
+      },
+    });
+  }
+
+  res.redirect(`/admin/orders/${order.id}`);
+});
+
+app.get("/admin/orders/:id", requireAdmin, async (req, res) => {
+  const order = await prisma.order.findUnique({
+    where: { id: req.params.id },
+    include: { items: { include: { product: true } } },
+  });
+  if (!order) return res.status(404).send("Order not found");
+  res.render("admin/order-detail", { order });
+});
+
+app.post("/admin/orders/:id/status", requireAdmin, async (req, res) => {
+  await prisma.order.update({
+    where: { id: req.params.id },
+    data: { status: req.body.status },
+  });
+  res.redirect("/admin/orders");
+});
+
+app.post("/admin/orders/:id/delete", requireAdmin, async (req, res) => {
+  await prisma.orderItem.deleteMany({ where: { orderId: req.params.id } });
+  await prisma.order.delete({ where: { id: req.params.id } });
+  res.redirect("/admin/orders");
+});
+
 app.get("/admin/prescriptions", requireAdmin, async (req, res) => {
   const prescriptions = await prisma.prescription.findMany({
     orderBy: { createdAt: "desc" },

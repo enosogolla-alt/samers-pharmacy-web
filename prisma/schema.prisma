@@ -94,13 +94,16 @@ model User {
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  user       User?       @relation(fields: [userId], references: [id])
-  userId     String?
-  status     String      @default("pending") // pending, preparing, out_for_delivery, delivered
-  total      Int
-  items      OrderItem[]
-  createdAt  DateTime    @default(now())
+  id            String      @id @default(cuid())
+  user          User?       @relation(fields: [userId], references: [id])
+  userId        String?
+  status        String      @default("pending") // pending, preparing, out_for_delivery, delivered
+  channel       String      @default("online")  // online, in_store
+  paymentMethod String?     // cash, mpesa, card
+  servedBy      String?     // staff name, for in-store sales
+  total         Int
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
 }
 
 model OrderItem {
