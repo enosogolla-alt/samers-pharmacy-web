@@ -26,18 +26,27 @@
             <% } %>
             <% prescriptions.forEach(function(p) { %>
               <tr class="hover:bg-mint-50/50 transition-colors">
-                <td class="px-5 py-3.5 font-medium text-ink-900"><%= p.fullName %></td>
+                <td class="px-5 py-3.5 font-medium text-ink-900"><a href="/admin/prescriptions/<%= p.id %>" class="hover:text-forest-700"><%= p.fullName %></a></td>
                 <td class="px-5 py-3.5 text-ink-900/70"><%= p.phone %></td>
                 <td class="px-5 py-3.5 text-ink-900/70"><%= p.fileUrl ? 'File Upload' : 'Typed' %></td>
                 <td class="px-5 py-3.5">
-                  <span class="px-2.5 py-1 rounded-capsule bg-gold-500/10 text-gold-500 text-xs font-semibold capitalize"><%= p.status %></span>
+                  <form action="/admin/prescriptions/<%= p.id %>/status" method="POST" class="inline-flex items-center gap-2">
+                    <select name="status" onchange="this.form.submit()" class="px-2.5 py-1 rounded-capsule bg-gold-500/10 text-gold-500 text-xs font-semibold capitalize border-0 focus:outline-none focus:ring-2 focus:ring-gold-500/30">
+                      <option value="submitted" <%= p.status === 'submitted' ? 'selected' : '' %>>Submitted</option>
+                      <option value="verified" <%= p.status === 'verified' ? 'selected' : '' %>>Verified</option>
+                      <option value="preparing" <%= p.status === 'preparing' ? 'selected' : '' %>>Preparing</option>
+                      <option value="out_for_delivery" <%= p.status === 'out_for_delivery' ? 'selected' : '' %>>Out for Delivery</option>
+                      <option value="delivered" <%= p.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                    </select>
+                  </form>
                 </td>
                 <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
                 <td class="px-5 py-3.5 text-right">
                   <% if (p.fileUrl) { %>
-                    <a href="<%= p.fileUrl %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900">View File</a>
-                  <% } else { %>
-                    <span class="text-ink-900/30">—</span>
+                    <a href="<%= p.fileUrl %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900"><%= p.typedContent ? '' : 'View File' %></a>
+                  <% } %>
+                  <% if (p.typedContent) { %>
+                    <span class="text-ink-900/50 text-xs italic" title="<%= p.typedContent %>">Typed submission</span>
                   <% } %>
                 </td>
               </tr>

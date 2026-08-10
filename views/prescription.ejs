@@ -23,10 +23,10 @@
       <p class="text-sm font-medium text-ink-900">Your prescription has been submitted. Our pharmacist team will verify it shortly.</p>
     </div>
   <% } %>
-  <form action="/prescription" method="POST" enctype="multipart/form-data" class="bg-white border border-mint-200 rounded-3xl p-8 md:p-10">
-    <input type="hidden" name="mode" :value="mode">
+ <form action="/prescription" method="POST" enctype="multipart/form-data" class="bg-white border border-mint-200 rounded-3xl p-8 md:p-10">
     <!-- Upload / Type toggle -->
     <div x-data="{ mode: 'upload' }">
+      <input type="hidden" name="mode" :value="mode">
       <div class="flex gap-2 mb-4 p-1 bg-mint-50 rounded-capsule w-fit">
         <button
           @click="mode = 'upload'"

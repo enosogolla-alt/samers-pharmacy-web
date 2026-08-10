@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/prescriptions' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Prescription Details', pageSubtitle: prescription.fullName }) %>
+
+    <main class="p-8 max-w-3xl">
+
+      <a href="/admin/prescriptions" class="inline-flex items-center gap-1.5 text-sm font-medium text-forest-700 hover:text-ink-900 mb-6">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Prescriptions
+      </a>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6 mb-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Patient Details</h2>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <p class="text-ink-900/70"><strong class="text-ink-900">Full Name:</strong> <%= prescription.fullName %></p>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Phone:</strong> <%= prescription.phone %></p>
+          <p class="text-ink-900/70 md:col-span-2"><strong class="text-ink-900">Delivery Address:</strong> <%= prescription.deliveryAddress %></p>
+          <% if (prescription.notes) { %>
+            <p class="text-ink-900/70 md:col-span-2"><strong class="text-ink-900">Notes:</strong> <%= prescription.notes %></p>
+          <% } %>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Submitted:</strong> <%= new Date(prescription.createdAt).toLocaleString('en-GB') %></p>
+        </div>
+      </div>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6 mb-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Prescription</h2>
+        <% if (prescription.fileUrl) { %>
+          <% const isPdf = prescription.fileUrl.toLowerCase().endsWith('.pdf'); %>
+          <% if (isPdf) { %>
+            <a href="<%= prescription.fileUrl %>" target="_blank" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-mint-50 text-forest-700 font-semibold text-sm hover:bg-mint-200 transition-colors">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              Open PDF File
+            </a>
+          <% } else { %>
+            <a href="<%= prescription.fileUrl %>" target="_blank">
+              <img src="<%= prescription.fileUrl %>" alt="Prescription" class="max-w-full rounded-xl border border-mint-200">
+            </a>
+          <% } %>
+        <% } else if (prescription.typedContent) { %>
+          <p class="text-ink-900/80 leading-relaxed whitespace-pre-wrap bg-mint-50 rounded-xl p-4"><%= prescription.typedContent %></p>
+        <% } %>
+      </div>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Update Status</h2>
+        <form action="/admin/prescriptions/<%= prescription.id %>/status" method="POST" class="flex gap-3">
+          <select name="status" class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            <option value="submitted" <%= prescription.status === 'submitted' ? 'selected' : '' %>>Submitted</option>
+            <option value="verified" <%= prescription.status === 'verified' ? 'selected' : '' %>>Verified</option>
+            <option value="preparing" <%= prescription.status === 'preparing' ? 'selected' : '' %>>Preparing</option>
+            <option value="out_for_delivery" <%= prescription.status === 'out_for_delivery' ? 'selected' : '' %>>Out for Delivery</option>
+            <option value="delivered" <%= prescription.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+          </select>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Save</button>
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

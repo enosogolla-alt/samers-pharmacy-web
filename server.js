@@ -109,6 +109,7 @@ app.post(
   async (req, res) => {
     const { mode, typedContent, fullName, phone, deliveryAddress, notes } =
       req.body;
+  
 
     const fileUrl = req.file
       ? `/uploads/prescriptions/${req.file.filename}`
@@ -418,6 +419,20 @@ app.get("/admin/prescriptions", requireAdmin, async (req, res) => {
     orderBy: { createdAt: "desc" },
   });
   res.render("admin/prescriptions", { prescriptions });
+});
+
+app.get("/admin/prescriptions/:id", requireAdmin, async (req, res) => {
+  const prescription = await prisma.prescription.findUnique({ where: { id: req.params.id } });
+  if (!prescription) return res.status(404).send("Prescription not found");
+  res.render("admin/prescription-detail", { prescription });
+});
+
+app.post("/admin/prescriptions/:id/status", requireAdmin, async (req, res) => {
+  await prisma.prescription.update({
+    where: { id: req.params.id },
+    data: { status: req.body.status },
+  });
+  res.redirect("/admin/prescriptions/" + req.params.id);
 });
 
 app.get("/admin/consultations", requireAdmin, async (req, res) => {
