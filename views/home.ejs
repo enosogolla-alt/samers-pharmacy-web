@@ -420,7 +420,12 @@
     ]; %>
     <% posts.forEach(function(post) { %>
       <a href="blog" class="min-w-[280px] md:min-w-[320px] snap-start group">
-        <div class="rounded-2xl h-44 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #BFE8D6 0%, #E9F7F2 100%);"></div>
+        <div class="rounded-2xl h-44 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #BFE8D6 0%, #E9F7F2 100%);">
+          <% if (post.imageUrl) { %>
+            <img src="<%= post.imageUrl %>" alt="<%= post.title %>" class="w-full h-full object-cover">
+          <% } %>
+        </div>
+        
         <h3 class="font-display text-lg font-semibold text-ink-900 mb-2 leading-snug group-hover:text-forest-700 transition-colors"><%= post.title %></h3>
         <p class="text-sm text-ink-900/60 mb-3 leading-relaxed"><%= post.excerpt %></p>
         <span class="inline-flex items-center gap-1 text-forest-700 text-sm font-semibold">

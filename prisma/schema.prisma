@@ -140,6 +140,7 @@ model ConsultationBooking {
   fullName  String
   phone     String
   notes     String?
+  status    String   @default("pending") // pending, confirmed, completed, cancelled
   createdAt DateTime @default(now())
 }
 
@@ -149,6 +150,7 @@ model BlogPost {
   slug      String   @unique
   excerpt   String?
   body      String
+  imageUrl  String?
   createdAt DateTime @default(now())
 }
 

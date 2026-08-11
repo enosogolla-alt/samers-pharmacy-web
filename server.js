@@ -182,6 +182,20 @@ app.post("/consultation", async (req, res) => {
   res.redirect("/consultation?success=1");
 });
 
+app.get("/admin/consultations/:id", requireAdmin, async (req, res) => {
+  const consultation = await prisma.consultationBooking.findUnique({ where: { id: req.params.id } });
+  if (!consultation) return res.status(404).send("Consultation not found");
+  res.render("admin/consultation-detail", { consultation });
+});
+
+app.post("/admin/consultations/:id/status", requireAdmin, async (req, res) => {
+  await prisma.consultationBooking.update({
+    where: { id: req.params.id },
+    data: { status: req.body.status },
+  });
+  res.redirect("/admin/consultations/" + req.params.id);
+});
+
 app.get("/blog", async (req, res) => {
   const posts = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },
@@ -195,6 +209,43 @@ app.get("/blog/:slug", async (req, res) => {
   });
   if (!post) return res.status(404).send("Post not found");
   res.render("blog-post", { post });
+});
+
+app.get("/admin/blog/new", requireAdmin, async (req, res) => {
+  res.render("admin/blog-form", { post: null });
+});
+
+app.post("/admin/blog", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+  const { title, excerpt, body } = req.body;
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const imageUrl = req.file ? `/uploads/products/${req.file.filename}` : null;
+
+  await prisma.blogPost.create({
+    data: { title, slug, excerpt: excerpt || null, body, imageUrl },
+  });
+
+  res.redirect("/admin/blog");
+});
+
+app.get("/admin/blog/:id/edit", requireAdmin, async (req, res) => {
+  const post = await prisma.blogPost.findUnique({ where: { id: req.params.id } });
+  if (!post) return res.status(404).send("Post not found");
+  res.render("admin/blog-form", { post });
+});
+
+app.post("/admin/blog/:id/edit", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+  const { title, excerpt, body } = req.body;
+  const updateData = { title, excerpt: excerpt || null, body };
+  if (req.file) {
+    updateData.imageUrl = `/uploads/products/${req.file.filename}`;
+  }
+
+  await prisma.blogPost.update({
+    where: { id: req.params.id },
+    data: updateData,
+  });
+
+  res.redirect("/admin/blog");
 });
 
 app.get("/signin", (req, res) => {

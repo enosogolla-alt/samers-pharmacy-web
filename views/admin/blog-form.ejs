@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/blog' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', {
+      pageTitle: post ? 'Edit Post' : 'New Post',
+      pageSubtitle: post ? post.title : 'Write a new blog article'
+    }) %>
+
+    <main class="p-8 max-w-3xl">
+      <form action="<%= post ? '/admin/blog/' + post.id + '/edit' : '/admin/blog' %>" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+        <div class="bg-white border border-mint-200 rounded-2xl p-6">
+
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-ink-900 mb-1.5">Cover Image</label>
+            <div class="flex items-center gap-4">
+              <div class="w-32 h-20 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, #E4D4F5 0%, #F1E9FA 100%);">
+                <% if (post && post.imageUrl) { %>
+                  <img src="<%= post.imageUrl %>" alt="" class="w-full h-full object-cover">
+                <% } %>
+              </div>
+              <div>
+                <input type="file" name="image" accept="image/*" class="text-sm text-ink-900/70">
+                <p class="text-xs text-ink-900/40 mt-1">JPG or PNG, max 5MB. <% if (post && post.imageUrl) { %>Leave empty to keep current image.<% } %></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-ink-900 mb-1.5">Title</label>
+            <input type="text" name="title" required value="<%= post ? post.title : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+          </div>
+
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-ink-900 mb-1.5">Excerpt <span class="text-ink-900/40 font-normal">(short summary shown on the blog listing)</span></label>
+            <input type="text" name="excerpt" value="<%= post && post.excerpt ? post.excerpt : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-ink-900 mb-1.5">Body</label>
+            <textarea name="body" rows="12" required placeholder="Write your article here. Leave a blank line between paragraphs." class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"><%= post ? post.body : '' %></textarea>
+          </div>
+
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button type="submit" class="px-6 py-3 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">
+            <%= post ? 'Save Changes' : 'Publish Post' %>
+          </button>
+          <a href="/admin/blog" class="text-sm font-medium text-ink-900/60 hover:text-ink-900">Cancel</a>
+        </div>
+
+      </form>
+    </main>
+  </div>
+</div>
+</body>
+</html>

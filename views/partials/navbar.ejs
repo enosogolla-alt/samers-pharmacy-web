@@ -22,6 +22,7 @@
     transparentNav: <%= typeof transparentNav !== 'undefined' && transparentNav ? 'true' : 'false' %>
   }"
   x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 40 })"
+  x-cloak
   class="sticky top-0 z-50"
 >
 <!-- Moving offer strip -->

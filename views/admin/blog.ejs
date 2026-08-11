@@ -9,7 +9,7 @@
 
     <main class="p-8">
       <div class="flex justify-end mb-6">
-        <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">
+        <a href="/admin/blog/new" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
           New Post
         </a>
@@ -35,7 +35,8 @@
                 <td class="px-5 py-3.5 text-ink-900/50 font-mono text-xs"><%= p.slug %></td>
                 <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
                 <td class="px-5 py-3.5 text-right">
-                  <a href="/blog/<%= p.slug %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900">View Live</a>
+                  <a href="/blog/<%= p.slug %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900 mr-3">View Live</a>
+                  <a href="/admin/blog/<%= p.id %>/edit" class="text-forest-700 font-medium hover:text-ink-900">Edit</a>
                 </td>
               </tr>
             <% }); %>

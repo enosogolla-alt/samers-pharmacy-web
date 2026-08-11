@@ -17,6 +17,7 @@
               <th class="px-5 py-3 font-semibold">Topic</th>
               <th class="px-5 py-3 font-semibold">Mode</th>
               <th class="px-5 py-3 font-semibold">When / Where</th>
+              <th class="px-5 py-3 font-semibold">Status</th>
               <th class="px-5 py-3 font-semibold">Submitted</th>
             </tr>
           </thead>
@@ -26,7 +27,7 @@
             <% } %>
             <% consultations.forEach(function(c) { %>
               <tr class="hover:bg-mint-50/50 transition-colors">
-                <td class="px-5 py-3.5 font-medium text-ink-900"><%= c.fullName %></td>
+               <td class="px-5 py-3.5 font-medium text-ink-900"><a href="/admin/consultations/<%= c.id %>" class="hover:text-forest-700"><%= c.fullName %></a></td>
                 <td class="px-5 py-3.5 text-ink-900/70"><%= c.phone %></td>
                 <td class="px-5 py-3.5 text-ink-900/70"><%= c.topic %></td>
                 <td class="px-5 py-3.5">
@@ -38,6 +39,9 @@
                   <% } else { %>
                     <%= c.branch || '—' %>
                   <% } %>
+                </td>
+                <td class="px-5 py-3.5">
+                  <span class="px-2.5 py-1 rounded-capsule bg-gold-500/10 text-gold-500 text-xs font-semibold capitalize"><%= c.status %></span>
                 </td>
                 <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(c.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
               </tr>

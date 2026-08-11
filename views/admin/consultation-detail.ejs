@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+
+<body class="bg-mint-50">
+<div class="flex">
+  <%- include('../partials/admin-sidebar', { currentPath: '/admin/consultations' }) %>
+
+  <div class="flex-1 min-w-0">
+    <%- include('../partials/admin-topbar', { pageTitle: 'Consultation Details', pageSubtitle: consultation.fullName }) %>
+
+    <main class="p-8 max-w-3xl">
+
+      <a href="/admin/consultations" class="inline-flex items-center gap-1.5 text-sm font-medium text-forest-700 hover:text-ink-900 mb-6">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Consultations
+      </a>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6 mb-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Request Details</h2>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <p class="text-ink-900/70"><strong class="text-ink-900">Name:</strong> <%= consultation.fullName %></p>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Phone:</strong> <%= consultation.phone %></p>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Topic:</strong> <%= consultation.topic %></p>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Mode:</strong> <span class="capitalize"><%= consultation.mode %></span></p>
+          <% if (consultation.mode === 'online') { %>
+            <p class="text-ink-900/70"><strong class="text-ink-900">Date:</strong> <%= consultation.date || 'Not specified' %></p>
+            <p class="text-ink-900/70"><strong class="text-ink-900">Time:</strong> <%= consultation.time || 'Not specified' %></p>
+          <% } else { %>
+            <p class="text-ink-900/70"><strong class="text-ink-900">Branch:</strong> <%= consultation.branch || 'Not specified' %></p>
+          <% } %>
+          <p class="text-ink-900/70"><strong class="text-ink-900">Submitted:</strong> <%= new Date(consultation.createdAt).toLocaleString('en-GB') %></p>
+          <% if (consultation.notes) { %>
+            <p class="text-ink-900/70 md:col-span-2"><strong class="text-ink-900">Notes:</strong> <%= consultation.notes %></p>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="bg-white border border-mint-200 rounded-2xl p-6">
+        <h2 class="font-display text-lg font-semibold text-ink-900 mb-4">Update Status</h2>
+        <form action="/admin/consultations/<%= consultation.id %>/status" method="POST" class="flex gap-3">
+          <select name="status" class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            <option value="pending" <%= consultation.status === 'pending' ? 'selected' : '' %>>Pending</option>
+            <option value="confirmed" <%= consultation.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+            <option value="completed" <%= consultation.status === 'completed' ? 'selected' : '' %>>Completed</option>
+            <option value="cancelled" <%= consultation.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+          </select>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Save</button>
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
