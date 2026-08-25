@@ -60,10 +60,10 @@
     </div>
 
     <div class="bg-mint-50 rounded-2xl p-5 mb-6 grid grid-cols-2 gap-4 text-sm">
-      <div><span class="text-ink-900/50 block mb-0.5">Dosage Form</span><span class="font-medium text-ink-900">Tablet</span></div>
-      <div><span class="text-ink-900/50 block mb-0.5">Strength</span><span class="font-medium text-ink-900">15mg</span></div>
-      <div><span class="text-ink-900/50 block mb-0.5">Pack Size</span><span class="font-medium text-ink-900">Pack of 30</span></div>
-      <div><span class="text-ink-900/50 block mb-0.5">Active Ingredient</span><span class="font-medium text-ink-900">Phentermine</span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Dosage Form</span><span class="font-medium text-ink-900"><%= product.dosageForm || 'N/A' %></span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Strength</span><span class="font-medium text-ink-900"><%= product.strength || 'N/A' %></span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Pack Size</span><span class="font-medium text-ink-900"><%= product.packSize || 'N/A' %></span></div>
+      <div><span class="text-ink-900/50 block mb-0.5">Active Ingredient</span><span class="font-medium text-ink-900"><%= product.activeIngredient || 'N/A' %></span></div>
     </div>
 
     <div class="flex items-center gap-4">
@@ -119,43 +119,43 @@
   </div>
 
   <div x-show="tab === 'description'" class="text-ink-900/70 leading-relaxed max-w-3xl">
-    <p class="mb-4">Duromine 15 mg Capsules contain Phentermine, a sympathomimetic amine used as an appetite suppressant. It is prescribed for the short-term management of obesity, alongside exercise, behavioral modifications, and caloric restriction.</p>
-    <h4 class="font-semibold text-ink-900 mb-2">Storage Conditions</h4>
-    <p>Store below 25&deg;C in a dry place. Keep out of reach of children.</p>
+    <p class="mb-4"><%= product.description || 'No description available for this product.' %></p>
+    <% if (product.storageConditions) { %>
+      <h4 class="font-semibold text-ink-900 mb-2">Storage Conditions</h4>
+      <p><%= product.storageConditions %></p>
+    <% } %>
   </div>
 
   <div x-show="tab === 'dosage'" x-cloak class="text-ink-900/70 leading-relaxed max-w-3xl">
-    <p class="mb-4">Take one capsule daily in the morning, before breakfast or 1&ndash;2 hours after breakfast, as directed by your prescribing physician.</p>
-    <p>Do not take later in the day as it may cause difficulty sleeping. Do not exceed the prescribed dose.</p>
+    <p><%= product.dosageInstructions || 'Dosage information not yet available for this product — please consult your pharmacist.' %></p>
   </div>
 
   <div x-show="tab === 'warnings'" x-cloak class="text-ink-900/70 leading-relaxed max-w-3xl">
-    <p class="mb-4">Common side effects may include dry mouth, insomnia, and increased heart rate. Consult your doctor if symptoms persist or worsen.</p>
-    <p class="font-medium text-coral-500">Not recommended for individuals with heart conditions, high blood pressure, or during pregnancy. Always consult a licensed pharmacist before use.</p>
+    <p><%= product.warningsInfo || 'Warnings and side-effects information not yet available for this product — please consult your pharmacist.' %></p>
   </div>
 </section>
 
 <!-- ============ SIMILAR PRODUCTS ============ -->
+<% if (similarProducts.length > 0) { %>
 <section class="max-w-7xl mx-auto px-6 pb-16">
   <h2 class="font-display text-2xl font-semibold text-ink-900 mb-6">Similar Products</h2>
   <div class="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 snap-x snap-mandatory" style="scrollbar-width: none;">
-    <% const similar = [
-      { name: 'Active Girl Capsules 30\'s', price: 790 },
-      { name: 'Stilnox 10mg Tablets 14\'s', price: 1225 },
-      { name: 'Cosflora 2gms Sachets 10\'s', price: 836 },
-      { name: 'Advancis Passival Sleep Tablets', price: 978 },
-    ]; %>
-    <% similar.forEach(function(item) { %>
-      <a href="/product" class="min-w-[220px] snap-start bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
+    <% similarProducts.forEach(function(item) { %>
+      <a href="/product/<%= item.slug %>" class="min-w-[220px] snap-start bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
         <div class="rounded-xl h-32 mb-3 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
-          <svg class="w-9 h-9 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          <% if (item.imageUrl) { %>
+            <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="w-full h-full object-contain p-3">
+          <% } else { %>
+            <svg class="w-9 h-9 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+          <% } %>
         </div>
         <p class="text-sm font-medium text-ink-900 mb-2 leading-snug"><%= item.name %></p>
-        <span class="text-gold-500 font-bold text-sm">KSh <%= item.price %></span>
+        <span class="text-gold-500 font-bold text-sm">KSh <%= item.price.toLocaleString() %></span>
       </a>
     <% }); %>
   </div>
-</section> 
+</section>
+<% } %>
 
 <%- include('partials/bottom-nav') %>
 <%- include('partials/footer') %>

@@ -44,9 +44,10 @@
           </div>
         </div>
 
-        <div class="flex gap-3">
-          <a href="tel:<%= store.phone.replace(/\s/g, '') %>" class="flex-1 text-center py-2.5 rounded-capsule bg-forest-700 text-white text-sm font-semibold hover:bg-ink-900 transition-colors">Call Store</a>
-          <a href="#" class="flex-1 text-center py-2.5 rounded-capsule border border-gold-500 text-gold-500 text-sm font-semibold hover:bg-gold-500 hover:text-white transition-colors">Get Directions</a>
+        <div class="grid grid-cols-3 gap-2">
+          <a href="tel:<%= store.phone.replace(/\s/g, '') %>" class="text-center py-2.5 rounded-capsule bg-forest-700 text-white text-xs font-semibold hover:bg-ink-900 transition-colors">Call</a>
+          <a href="https://wa.me/<%= store.phone.replace(/[\s+]/g, '') %>" target="_blank" class="text-center py-2.5 rounded-capsule bg-[#25D366] text-white text-xs font-semibold hover:opacity-90 transition-opacity">WhatsApp</a>
+          <a href="#" class="text-center py-2.5 rounded-capsule border border-gold-500 text-gold-500 text-xs font-semibold hover:bg-gold-500 hover:text-white transition-colors">Directions</a>
         </div>
       </div>
     </div>

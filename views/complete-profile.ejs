@@ -1,0 +1,37 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+<section class="max-w-md mx-auto px-6 py-16">
+
+  <% if (error) { %>
+    <div class="bg-coral-500/10 border border-coral-500/30 rounded-2xl p-4 mb-6 flex items-center gap-3">
+      <svg class="w-5 h-5 text-coral-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+      <p class="text-sm font-medium text-ink-900"><%= error %></p>
+    </div>
+  <% } %>
+
+  <div class="text-center mb-8">
+    <a href="/" class="inline-flex items-center gap-2 mb-6">
+      <img src="/images/logo-icon.png" alt="Samers Pharmacy" class="w-10 h-10 object-contain mix-blend-multiply" />
+      <span class="font-display font-semibold text-xl text-forest-700">Samers Pharmacy</span>
+    </a>
+    <h1 class="font-display text-2xl font-semibold text-ink-900">One last step</h1>
+    <p class="text-ink-900/60 text-sm mt-1">Add your phone number to finish setting up your account, <%= name %>.</p>
+  </div>
+
+  <div class="bg-white border border-mint-200 rounded-3xl p-8">
+    <form action="/auth/google/complete-profile" method="POST">
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-ink-900 mb-1.5">Email</label>
+        <input type="email" value="<%= email %>" disabled class="w-full px-4 py-2.5 rounded-xl border border-mint-200 bg-mint-50 text-sm text-ink-900/50">
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-ink-900 mb-1.5">Phone Number</label>
+        <input type="tel" name="phone" required placeholder="+254 7XX XXX XXX" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+        <p class="text-xs text-ink-900/40 mt-1.5">We use this to reach you about your orders and prescriptions.</p>
+      </div>
+      <button type="submit" class="w-full py-3.5 rounded-capsule bg-forest-700 text-white font-semibold hover:bg-ink-900 transition-colors">Finish Creating Account</button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>

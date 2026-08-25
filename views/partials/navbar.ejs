@@ -18,6 +18,7 @@
 <div
   x-data="{
     mobileMenuOpen: false,
+    mobileSearchOpen: false,
     scrolled: false,
     transparentNav: <%= typeof transparentNav !== 'undefined' && transparentNav ? 'true' : 'false' %>
   }"
@@ -25,6 +26,42 @@
   x-cloak
   class="sticky top-0 z-50"
 >
+<script>
+  function searchBox() {
+    return {
+      q: '',
+      results: [],
+      open: false,
+      loading: false,
+      debounceTimer: null,
+      onInput() {
+        clearTimeout(this.debounceTimer);
+        const query = this.q.trim();
+        if (!query) {
+          this.results = [];
+          this.open = false;
+          return;
+        }
+        this.debounceTimer = setTimeout(() => this.fetchSuggestions(query), 250);
+      },
+      async fetchSuggestions(query) {
+        this.loading = true;
+        try {
+          const res = await fetch('/api/products/suggest?q=' + encodeURIComponent(query));
+          this.results = await res.json();
+          this.open = true;
+        } catch (e) {
+          this.results = [];
+        } finally {
+          this.loading = false;
+        }
+      },
+      close() {
+        this.open = false;
+      }
+    }
+  }
+</script>
 <!-- Moving offer strip -->
   <div class="bg-gold-500 text-ink-900 overflow-hidden whitespace-nowrap py-2">
     <div class="marquee-track inline-flex gap-16 text-sm font-semibold">
@@ -101,15 +138,39 @@
       </a>
 
       <!-- Search (desktop) -->
-      <div class="hidden md:flex flex-1 max-w-xl">
-        <div class="flex w-full rounded-capsule border border-mint-200 bg-mint-50 overflow-hidden focus-within:ring-2 focus-within:ring-forest-700/30">
+      <div class="hidden md:flex flex-1 max-w-xl relative" x-data="searchBox()" @click.outside="close()">
+        <form action="/products" method="GET" class="flex w-full rounded-capsule border border-mint-200 bg-mint-50 overflow-hidden focus-within:ring-2 focus-within:ring-forest-700/30">
           <input
             type="text"
+            name="search"
+            x-model="q"
+            @input="onInput()"
+            @focus="if (results.length) open = true"
+            autocomplete="off"
             placeholder="Search medicines, tests, health products…"
             class="flex-1 bg-transparent px-5 py-2.5 text-sm text-ink-900 placeholder:text-ink-900/40 focus:outline-none"
           />
-          <button class="px-5 bg-forest-700 text-white text-sm font-medium hover:bg-ink-900 transition-colors">
+          <button type="submit" class="px-5 bg-forest-700 text-white text-sm font-medium hover:bg-ink-900 transition-colors">
             Search
+          </button>
+        </form>
+
+        <!-- Suggestions dropdown -->
+        <div x-show="open && results.length" x-cloak
+          class="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-lg border border-mint-200 py-2 z-30 overflow-hidden">
+          <template x-for="p in results" :key="p.slug">
+            <a :href="'/product/' + p.slug" class="flex items-center gap-3 px-4 py-2.5 hover:bg-mint-50 transition-colors">
+              <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center overflow-hidden bg-mint-50">
+                <img x-show="p.imageUrl" :src="p.imageUrl" :alt="p.name" class="w-full h-full object-contain">
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-ink-900 truncate" x-text="p.name"></p>
+                <p class="text-xs text-gold-500 font-semibold" x-text="'KSh ' + p.price.toLocaleString()"></p>
+              </div>
+            </a>
+          </template>
+          <button @click="$root.querySelector('form').submit()" class="w-full text-left px-4 py-2.5 text-sm text-forest-700 font-medium hover:bg-mint-50 border-t border-mint-200" x-show="q.trim()">
+            See all results for "<span x-text="q"></span>"
           </button>
         </div>
       </div>
@@ -140,6 +201,18 @@
           </svg>
           Consult an Expert
         </a>
+
+        <!-- Search (mobile) -->
+        <button
+          @click="mobileSearchOpen = !mobileSearchOpen"
+          class="md:hidden p-2 transition-colors duration-300"
+          :class="(!transparentNav || scrolled) ? 'text-ink-900' : 'text-white'"
+          aria-label="Search"
+        >
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </button>
 
         <!-- Cart -->
         <a href="/cart"
@@ -186,6 +259,51 @@
       </div>
     </div>
 
+    <!-- Search (mobile expandable) -->
+    <div x-show="mobileSearchOpen" x-cloak
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 -translate-y-2"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      class="md:hidden border-t px-4 py-3 relative"
+      :class="(!transparentNav || scrolled) ? 'border-mint-200 bg-white' : 'border-white/20 bg-white'"
+      x-data="searchBox()" @click.outside="close()"
+    >
+      <form action="/products" method="GET" class="flex w-full rounded-capsule border border-mint-200 bg-mint-50 overflow-hidden focus-within:ring-2 focus-within:ring-forest-700/30">
+        <input
+          type="text"
+          name="search"
+          x-model="q"
+          @input="onInput()"
+          x-init="$nextTick(() => mobileSearchOpen && $el.focus())"
+          autocomplete="off"
+          placeholder="Search medicines, tests, health products…"
+          class="flex-1 bg-transparent px-4 py-2.5 text-sm text-ink-900 placeholder:text-ink-900/40 focus:outline-none"
+        />
+        <button type="submit" class="px-4 bg-forest-700 text-white text-sm font-medium">
+          Search
+        </button>
+      </form>
+
+      <!-- Suggestions dropdown -->
+      <div x-show="open && results.length" x-cloak
+        class="absolute left-4 right-4 top-full mt-1 bg-white rounded-2xl shadow-lg border border-mint-200 py-2 z-30 overflow-hidden">
+        <template x-for="p in results" :key="p.slug">
+          <a :href="'/product/' + p.slug" class="flex items-center gap-3 px-4 py-2.5 hover:bg-mint-50 transition-colors">
+            <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center overflow-hidden bg-mint-50">
+              <img x-show="p.imageUrl" :src="p.imageUrl" :alt="p.name" class="w-full h-full object-contain">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-ink-900 truncate" x-text="p.name"></p>
+              <p class="text-xs text-gold-500 font-semibold" x-text="'KSh ' + p.price.toLocaleString()"></p>
+            </div>
+          </a>
+        </template>
+        <button @click="$root.querySelector('form').submit()" class="w-full text-left px-4 py-2.5 text-sm text-forest-700 font-medium hover:bg-mint-50 border-t border-mint-200" x-show="q.trim()">
+          See all results for "<span x-text="q"></span>"
+        </button>
+      </div>
+    </div>
+
     <!-- Icon nav row (desktop) -->
     <div
       class="hidden md:block border-t transition-colors duration-300"
@@ -196,6 +314,13 @@
           class="flex items-center gap-7 text-sm font-medium transition-colors duration-300"
           :class="(!transparentNav || scrolled) ? 'text-ink-900/80' : 'text-white/90'"
         >
+          <li>
+            <a href="/products" class="flex items-center gap-1.5 py-3.5 hover:text-forest-700">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+              Products
+            </a>
+          </li>
+
           <li>
             <a href="/categories" class="flex items-center gap-1.5 py-3.5 hover:text-forest-700">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h6v6H4V6zm0 8h6v6H4v-6zm10-8h6v6h-6V6zm0 8h6v6h-6v-6z"/></svg>
@@ -290,6 +415,7 @@
     </div>
 
     <div class="flex-1 overflow-y-auto px-5 py-4 space-y-1">
+      <a href="/products" class="block py-3.5 font-medium text-ink-900 border-b border-mint-200">Products</a>
       <a href="/categories" class="block py-3.5 font-medium text-ink-900 border-b border-mint-200">Shop by Category</a>
       <a href="/conditions" class="block py-3.5 font-medium text-ink-900 border-b border-mint-200">Shop by Condition</a>
       <a href="/brands" class="block py-3.5 font-medium text-ink-900 border-b border-mint-200">Shop by Brand</a>

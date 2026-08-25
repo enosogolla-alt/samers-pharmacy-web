@@ -136,11 +136,78 @@
               <label class="block text-sm font-medium text-ink-900 mb-1.5">Storage Conditions</label>
               <input type="text" name="storageConditions" placeholder="e.g. Store below 25°C in a dry place" value="<%= product && product.storageConditions ? product.storageConditions : '' %>" class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
             </div>
+            <div class="md:col-span-3">
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Dosage Instructions</label>
+              <textarea name="dosageInstructions" rows="3" placeholder="e.g. Take one tablet daily after meals, as directed by your physician." class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"><%= product && product.dosageInstructions ? product.dosageInstructions : '' %></textarea>
+            </div>
+            <div class="md:col-span-3">
+              <label class="block text-sm font-medium text-ink-900 mb-1.5">Warnings &amp; Side Effects</label>
+              <textarea name="warningsInfo" rows="3" placeholder="e.g. May cause drowsiness. Not recommended during pregnancy. Consult a pharmacist before use." class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"><%= product && product.warningsInfo ? product.warningsInfo : '' %></textarea>
+            </div>
             <div class="flex items-center gap-2 pt-7">
               <input type="checkbox" name="requiresPrescription" id="requiresPrescription" <%= product && product.requiresPrescription ? 'checked' : '' %> class="w-4 h-4 rounded border-mint-200 text-forest-700 focus:ring-forest-700/20">
               <label for="requiresPrescription" class="text-sm font-medium text-ink-900">Requires a prescription</label>
             </div>
           </div>
+        </div>
+
+        <!-- Similar Products -->
+        <div class="bg-white border border-mint-200 rounded-2xl p-6"
+          x-data="{
+            q: '',
+            results: [],
+            selected: <%- JSON.stringify(selectedSimilarProducts.map(p => ({ id: p.id, name: p.name, price: p.price }))).replace(/"/g, '&quot;') %>,
+            excludeId: '<%= product ? product.id : '' %>',
+            debounceTimer: null,
+            onInput() {
+              clearTimeout(this.debounceTimer);
+              const query = this.q.trim();
+              if (!query) { this.results = []; return; }
+              this.debounceTimer = setTimeout(() => this.fetchResults(query), 250);
+            },
+            async fetchResults(query) {
+              const res = await fetch('/api/products/suggest?q=' + encodeURIComponent(query));
+              const data = await res.json();
+              const selectedIds = this.selected.map(p => p.id);
+              this.results = data.filter(p => p.id !== this.excludeId && !selectedIds.includes(p.id));
+            },
+            addProduct(p) {
+              this.selected.push({ id: p.id, name: p.name, price: p.price });
+              this.results = this.results.filter(r => r.id !== p.id);
+              this.q = '';
+            },
+            removeProduct(id) {
+              this.selected = this.selected.filter(p => p.id !== id);
+            }
+          }"
+        >
+          <h2 class="font-display text-lg font-semibold text-ink-900 mb-2">Similar Products</h2>
+          <p class="text-sm text-ink-900/50 mb-4">Search and select products to show as "Similar Products" on this product's page.</p>
+
+          <div class="relative mb-4">
+            <input type="text" x-model="q" @input="onInput()" autocomplete="off"
+              placeholder="Search products by name..."
+              class="w-full px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+            <div x-show="results.length" x-cloak class="absolute top-full mt-1 w-full bg-white rounded-xl shadow-lg border border-mint-200 py-1 z-10 max-h-64 overflow-y-auto">
+              <template x-for="p in results" :key="p.id">
+                <button type="button" @click="addProduct(p)" class="w-full text-left px-4 py-2 text-sm hover:bg-mint-50 flex items-center justify-between gap-2">
+                  <span x-text="p.name"></span>
+                  <span class="text-gold-500 font-semibold text-xs" x-text="'KSh ' + p.price.toLocaleString()"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2" x-show="selected.length">
+            <template x-for="p in selected" :key="p.id">
+              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-capsule bg-mint-50 text-sm text-ink-900">
+                <span x-text="p.name"></span>
+                <input type="hidden" name="similarProductIds" :value="p.id">
+                <button type="button" @click="removeProduct(p.id)" class="text-ink-900/40 hover:text-coral-500">&times;</button>
+              </span>
+            </template>
+          </div>
+          <p class="text-sm text-ink-900/40" x-show="!selected.length">No similar products selected yet.</p>
         </div>
 
         <div class="flex items-center gap-4">

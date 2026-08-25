@@ -1,0 +1,97 @@
+<%- include('partials/header') %> <%- include('partials/navbar') %>
+
+<section class="max-w-7xl mx-auto px-6 pt-8">
+  <nav class="text-sm text-ink-900/50 mb-4">
+    <a href="/" class="hover:text-forest-700">Home</a>
+    <span class="mx-1">&rsaquo;</span>
+    <a href="/consultation" class="hover:text-forest-700">Consult an Expert</a>
+    <span class="mx-1">&rsaquo;</span>
+    <span class="text-ink-900">Track Booking</span>
+  </nav>
+  <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">
+    Track Your Consultation
+  </h1>
+  <p class="text-ink-900/60 max-w-xl">
+    Booked by <%= booking.fullName %> &middot; Reference #<%= booking.id.slice(0, 8).toUpperCase() %>
+  </p>
+</section>
+
+<section class="max-w-4xl mx-auto px-6 py-10">
+
+  <% if (booking.status === 'cancelled') { %>
+    <!-- Cancelled state -->
+    <div class="bg-coral-500/10 border border-coral-500/30 rounded-3xl p-8 flex items-center gap-4">
+      <span class="w-12 h-12 rounded-full bg-coral-500/15 flex items-center justify-center shrink-0">
+        <svg class="w-6 h-6 text-coral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </span>
+      <div>
+        <h2 class="font-display text-xl font-semibold text-ink-900 mb-1">Booking Cancelled</h2>
+        <p class="text-sm text-ink-900/60">This consultation booking has been cancelled. If you'd like to book again, feel free to submit a new request.</p>
+      </div>
+    </div>
+  <% } else { %>
+    <!-- Status Tracker -->
+    <div class="bg-white border border-mint-200 rounded-3xl p-8">
+      <h2 class="font-display text-xl font-semibold text-ink-900 mb-6">Consultation Status</h2>
+      <% const steps = [
+        { key: 'pending', label: 'Pending' },
+        { key: 'confirmed', label: 'Confirmed' },
+        { key: 'completed', label: 'Completed' },
+      ]; %>
+      <% const currentStep = Math.max(0, steps.findIndex(s => s.key === booking.status)); %>
+      <div class="flex items-center justify-between relative">
+        <div class="absolute top-4 left-0 right-0 h-0.5 bg-mint-200 -z-0"></div>
+        <div class="absolute top-4 left-0 h-0.5 bg-forest-700 -z-0" style="width: <%= (currentStep / (steps.length - 1)) * 100 %>%;"></div>
+        <% if (currentStep < steps.length - 1) { %>
+          <div class="absolute top-4 h-0.5 bg-forest-700 -z-0 animate-pulse" style="left: <%= (currentStep / (steps.length - 1)) * 100 %>%; width: <%= (1 / (steps.length - 1)) * 100 %>%;"></div>
+        <% } %>
+
+        <% steps.forEach(function(step, i) { %>
+          <div class="relative z-10 flex flex-col items-center gap-2 flex-1">
+            <% if (i < currentStep) { %>
+              <span class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-forest-700 text-white">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </span>
+            <% } else if (i === currentStep && i === steps.length - 1) { %>
+              <span class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-forest-700 text-white">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </span>
+            <% } else if (i === currentStep) { %>
+              <span class="relative w-8 h-8 flex items-center justify-center">
+                <span class="absolute inset-0 rounded-full bg-forest-700 opacity-75 animate-ping"></span>
+                <span class="relative w-8 h-8 rounded-full bg-forest-700 text-white flex items-center justify-center text-xs font-bold"><%= i + 1 %></span>
+              </span>
+            <% } else { %>
+              <span class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-white border-2 border-mint-200 text-ink-900/30"><%= i + 1 %></span>
+            <% } %>
+            <span class="text-xs font-medium text-center <%= i <= currentStep ? 'text-ink-900' : 'text-ink-900/40' %>"><%= step.label %></span>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Booking details -->
+  <div class="bg-white border border-mint-200 rounded-3xl p-8 mt-6 grid md:grid-cols-2 gap-5 text-sm">
+    <div><span class="text-ink-900/50 block mb-0.5">Full Name</span><span class="font-medium text-ink-900"><%= booking.fullName %></span></div>
+    <div><span class="text-ink-900/50 block mb-0.5">Phone Number</span><span class="font-medium text-ink-900"><%= booking.phone %></span></div>
+    <div><span class="text-ink-900/50 block mb-0.5">Topic</span><span class="font-medium text-ink-900"><%= booking.topic %></span></div>
+    <div><span class="text-ink-900/50 block mb-0.5">Mode</span><span class="font-medium text-ink-900"><%= booking.mode === 'online' ? 'Online Consultation' : 'Visit In-Store' %></span></div>
+    <% if (booking.branch) { %>
+      <div><span class="text-ink-900/50 block mb-0.5">Branch</span><span class="font-medium text-ink-900"><%= booking.branch %></span></div>
+    <% } %>
+    <% if (booking.date) { %>
+      <div><span class="text-ink-900/50 block mb-0.5">Preferred Date</span><span class="font-medium text-ink-900"><%= booking.date %><%= booking.time ? ' at ' + booking.time : '' %></span></div>
+    <% } %>
+    <% if (booking.notes) { %>
+      <div class="md:col-span-2"><span class="text-ink-900/50 block mb-0.5">Notes</span><span class="font-medium text-ink-900"><%= booking.notes %></span></div>
+    <% } %>
+    <div><span class="text-ink-900/50 block mb-0.5">Submitted On</span><span class="font-medium text-ink-900"><%= booking.createdAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' }) %></span></div>
+  </div>
+
+  <div class="mt-6 text-center">
+    <a href="/consultation" class="text-forest-700 font-medium hover:underline text-sm">Book another consultation</a>
+  </div>
+</section>
+
+<%- include('partials/bottom-nav') %> <%- include('partials/footer') %>

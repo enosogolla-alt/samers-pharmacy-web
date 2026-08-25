@@ -1,14 +1,16 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
-<div x-data="{ view: 'grid', activeCategory: 'All Products' }">
+<div x-data="{ view: 'grid' }">
 
   <!-- Breadcrumb + Title -->
+  <% const activeCategoryObj = activeCategorySlug ? categories.find(c => c.slug === activeCategorySlug) : null; %>
+  <% const pageTitle = activeCategoryObj ? activeCategoryObj.name : 'All Products'; %>
   <section class="max-w-7xl mx-auto px-6 pt-8">
     <nav class="text-sm text-ink-900/50 mb-4">
-      <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span> <span class="text-ink-900">All Products</span>
+      <a href="/" class="hover:text-forest-700">Home</a> <span class="mx-1">&rsaquo;</span> <span class="text-ink-900"><%= pageTitle %></span>
     </nav>
-    <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">All Products</h1>
+    <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2"><%= pageTitle %></h1>
     <p class="text-ink-900/60 max-w-xl">Browse our complete range of medications, health supplements, and wellness products.</p>
   </section>
 
@@ -17,27 +19,26 @@
     <!-- Sidebar -->
     <aside>
       <h3 class="font-semibold text-ink-900 mb-3">Search</h3>
-      <div class="relative mb-8">
+      <form action="/products" method="GET" class="relative mb-8">
         <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-900/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mint-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
-      </div>
+        <input type="text" name="search" value="<%= search %>" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mint-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+      </form>
 
       <h3 class="font-semibold text-ink-900 mb-3">Categories</h3>
       <ul class="space-y-1">
         <li>
-          <button @click="activeCategory = 'All Products'"
-            class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors"
-            :class="activeCategory === 'All Products' ? 'bg-forest-700 text-white font-semibold' : 'text-ink-900/70 hover:bg-mint-50'">
+          <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
+            class="block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors <%= !activeCategorySlug ? 'bg-forest-700 text-white font-semibold' : 'text-ink-900/70 hover:bg-mint-50' %>">
             All Products
-          </button>
+          </a>
         </li>
         <% categories.forEach(function(c) { %>
+          <% const catUrl = '/products?category=' + encodeURIComponent(c.slug) + (search ? '&search=' + encodeURIComponent(search) : ''); %>
           <li>
-            <button @click="activeCategory = '<%= c.name %>'"
-              class="w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors"
-              :class="activeCategory === '<%= c.name %>' ? 'bg-forest-700 text-white font-semibold' : 'text-ink-900/70 hover:bg-mint-50'">
+            <a href="<%= catUrl %>"
+              class="block w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors <%= activeCategorySlug === c.slug ? 'bg-forest-700 text-white font-semibold' : 'text-ink-900/70 hover:bg-mint-50' %>">
               <%= c.name %>
-            </button>
+            </a>
           </li>
         <% }); %>
       </ul>
@@ -45,16 +46,29 @@
 
     <!-- Product Grid/List -->
     <div>
-     
+      <% if (search) { %>
+        <p class="text-sm text-ink-900/70 mb-4">
+          Showing results for "<span class="font-semibold text-ink-900"><%= search %></span>"
+          <a href="/products" class="text-forest-700 font-medium hover:underline ml-2">Clear</a>
+        </p>
+      <% } %>
 
       <div class="flex items-center justify-between mb-6">
         <p class="text-sm text-ink-900/60"><%= products.length %> products</p>
         <div class="flex items-center gap-3">
-          <select class="text-sm border border-mint-200 rounded-xl px-3 py-2 focus:outline-none">
-            <option>Featured</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Name: A-Z</option>
+          <select
+            class="text-sm border border-mint-200 rounded-xl px-3 py-2 focus:outline-none"
+            @change="
+              const url = new URL(window.location);
+              if ($event.target.value) { url.searchParams.set('sort', $event.target.value); }
+              else { url.searchParams.delete('sort'); }
+              window.location = url;
+            "
+          >
+            <option value="" <%= sort === '' ? 'selected' : '' %>>Featured</option>
+            <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+            <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name: A-Z</option>
           </select>
           <div class="flex border border-mint-200 rounded-xl overflow-hidden">
             <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">

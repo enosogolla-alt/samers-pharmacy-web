@@ -14,7 +14,40 @@
   </p>
 </section>
 
-<section class="max-w-3xl mx-auto px-6 py-10" x-data="{ mode: 'online' }">
+<section class="max-w-3xl mx-auto px-6 pt-10">
+  <div class="bg-white border border-mint-200 rounded-3xl p-6 md:p-8 mb-8">
+    <h2 class="font-display text-lg font-semibold text-ink-900 mb-1">Already booked a consultation?</h2>
+    <p class="text-sm text-ink-900/60 mb-4">Enter the phone number you used to find your booking(s) and check their status.</p>
+    <form action="/consultation/lookup" method="GET" class="flex flex-col sm:flex-row gap-3">
+      <input type="tel" name="phone" required value="<%= lookupPhone %>" placeholder="+254 7XX XXX XXX" class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+      <button type="submit" class="px-6 py-2.5 rounded-capsule bg-forest-700 text-white font-semibold text-sm hover:bg-ink-900 transition-colors whitespace-nowrap">Find My Bookings</button>
+    </form>
+
+    <% if (lookupResults !== null) { %>
+      <div class="mt-5 pt-5 border-t border-mint-200">
+        <% if (lookupResults.length === 0) { %>
+          <p class="text-sm text-ink-900/50">No consultation bookings found for that phone number.</p>
+        <% } else { %>
+          <ul class="space-y-2">
+            <% lookupResults.forEach(function(b) { %>
+              <li>
+                <a href="/consultation/track/<%= b.id %>" class="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-mint-50 hover:bg-mint-200/60 transition-colors">
+                  <span class="text-sm text-ink-900">
+                    <span class="font-medium">Ref #<%= b.id.slice(0, 8).toUpperCase() %></span>
+                    <span class="text-ink-900/50"> &middot; <%= b.topic %> &middot; <%= b.createdAt.toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
+                  </span>
+                  <span class="text-xs font-semibold <%= b.status === 'cancelled' ? 'text-coral-500' : 'text-forest-700' %> uppercase tracking-wide"><%= b.status %></span>
+                </a>
+              </li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="max-w-3xl mx-auto px-6 pb-10" x-data="{ mode: 'online' }">
 
  <% if (success) { %>
     <div class="bg-gold-500/10 border border-gold-500/40 rounded-2xl p-5 mb-8 flex items-center gap-3">
