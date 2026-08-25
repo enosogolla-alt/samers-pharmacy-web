@@ -18,6 +18,7 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
+app.set("trust proxy", 1); // Render sits behind a proxy that terminates HTTPS; trust its X-Forwarded-* headers
 
 const multer = require("multer");
 const path = require("path");
