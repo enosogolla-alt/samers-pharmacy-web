@@ -39,7 +39,11 @@ const productStorage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, productUploadDir),
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
-const uploadProductImage = multer({ storage: productStorage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
+const uploadProductImage = multer({ storage: productStorage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max — still used by blog routes until Piece 3
+
+// Memory storage for product images: buffer goes straight to R2, never touches local disk.
+const uploadProductImageR2 = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
+const { uploadPublicFile } = require("./lib/r2.js");
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -442,9 +446,11 @@ app.get("/admin/products/new", requireAdmin, async (req, res) => {
   res.render("admin/product-form", { product: null, categories, brands, selectedSimilarProducts: [] });
 });
 
-app.post("/admin/products", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+app.post("/admin/products", requireAdmin, uploadProductImageR2.single("image"), async (req, res) => {
   const data = req.body;
-  const imageUrl = req.file ? `/uploads/products/${req.file.filename}` : null;
+  const imageUrl = req.file
+    ? await uploadPublicFile(req.file.buffer, req.file.originalname, req.file.mimetype)
+    : null;
   const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   const newProduct = await prisma.product.create({
@@ -492,7 +498,7 @@ app.get("/admin/products/:id/edit", requireAdmin, async (req, res) => {
   res.render("admin/product-form", { product, categories, brands, selectedSimilarProducts });
 });
 
-app.post("/admin/products/:id/edit", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+app.post("/admin/products/:id/edit", requireAdmin, uploadProductImageR2.single("image"), async (req, res) => {
   const data = req.body;
   const updateData = {
       name: data.name,
@@ -517,7 +523,7 @@ app.post("/admin/products/:id/edit", requireAdmin, uploadProductImage.single("im
       brandId: data.brandId || null,
   };
   if (req.file) {
-    updateData.imageUrl = `/uploads/products/${req.file.filename}`;
+    updateData.imageUrl = await uploadPublicFile(req.file.buffer, req.file.originalname, req.file.mimetype);
   }
 
   await prisma.product.update({
