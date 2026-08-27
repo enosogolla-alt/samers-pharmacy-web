@@ -156,8 +156,12 @@ app.get("/", async (req, res) => {
   const offers = await prisma.product.findMany({
     where: { oldPrice: { not: null } },
   });
+  const latestPosts = await prisma.blogPost.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
 
-  res.render("home", { categories, featuredProducts, offers });
+  res.render("home", { categories, featuredProducts, offers, latestPosts });
 });
 
 app.get("/api/products/suggest", async (req, res) => {
