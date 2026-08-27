@@ -21,20 +21,11 @@ const app = express();
 app.set("trust proxy", 1); // Render sits behind a proxy that terminates HTTPS; trust its X-Forwarded-* headers
 
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 
-const uploadDir = path.join(__dirname, "public", "uploads", "prescriptions");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-});
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
-// Memory storage for product and blog images: buffer goes straight to R2, never touches local disk.
+// Memory storage: buffers go straight to R2, never touch local disk.
 const uploadProductImageR2 = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
-const { uploadPublicFile } = require("./lib/r2.js");
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max, for prescriptions
+const { uploadPublicFile, uploadPrivateFile, getSignedPrescriptionUrl } = require("./lib/r2.js");
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -239,7 +230,7 @@ app.post(
   
 
     const fileUrl = req.file
-      ? `/uploads/prescriptions/${req.file.filename}`
+      ? await uploadPrivateFile(req.file.buffer, req.file.originalname, req.file.mimetype)
       : null;
 
     const prescription = await prisma.prescription.create({
@@ -666,7 +657,10 @@ app.get("/admin/prescriptions", requireAdmin, async (req, res) => {
 app.get("/admin/prescriptions/:id", requireAdmin, async (req, res) => {
   const prescription = await prisma.prescription.findUnique({ where: { id: req.params.id } });
   if (!prescription) return res.status(404).send("Prescription not found");
-  res.render("admin/prescription-detail", { prescription });
+  const signedFileUrl = prescription.fileUrl
+    ? await getSignedPrescriptionUrl(prescription.fileUrl)
+    : null;
+  res.render("admin/prescription-detail", { prescription, signedFileUrl });
 });
 
 app.post("/admin/prescriptions/:id/status", requireAdmin, async (req, res) => {

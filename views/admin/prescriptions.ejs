@@ -43,7 +43,7 @@
                 <td class="px-5 py-3.5 text-ink-900/50"><%= new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
                 <td class="px-5 py-3.5 text-right">
                   <% if (p.fileUrl) { %>
-                    <a href="<%= p.fileUrl %>" target="_blank" class="text-forest-700 font-medium hover:text-ink-900"><%= p.typedContent ? '' : 'View File' %></a>
+                    <a href="/admin/prescriptions/<%= p.id %>" class="text-forest-700 font-medium hover:text-ink-900"><%= p.typedContent ? '' : 'View File' %></a>
                   <% } %>
                   <% if (p.typedContent) { %>
                     <span class="text-ink-900/50 text-xs italic" title="<%= p.typedContent %>">Typed submission</span>
