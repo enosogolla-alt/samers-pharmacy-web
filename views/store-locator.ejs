@@ -43,25 +43,12 @@
           <div class="flex items-start gap-3">
             <svg class="w-4 h-4 text-forest-700 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div class="text-ink-900/70">
-              <% const sameAllWeek = store.hoursWeekday && store.hoursWeekday === store.hoursSaturday && store.hoursWeekday === store.hoursSunday; %>
-              <% if (sameAllWeek) { %>
-                <div>Everyday: <%= store.hoursWeekday %></div>
+              <% if (store.name.includes('Eldoret')) { %>
+                <div>Everyday: 7:30am - 9:00pm</div>
+              <% } else if (store.name.includes('Khayega')) { %>
+                <div>Everyday: 7:30am - 8:00pm</div>
               <% } else { %>
-                <% if (store.hoursWeekday) { %>
-                  <div>Mon&ndash;Fri: <%= store.hoursWeekday %></div>
-                <% } %>
-                <% if (store.hoursSaturday) { %>
-                  <div>Sat: <%= store.hoursSaturday %></div>
-                <% } %>
-                <% if (store.hoursSunday) { %>
-                  <div>Sun: <%= store.hoursSunday %></div>
-                <% } %>
-                <% if (!store.hoursWeekday && !store.hoursSaturday && !store.hoursSunday) { %>
-                  <span class="text-ink-900/40 italic">Hours not yet available</span>
-                <% } %>
-              <% } %>
-              <% if (store.holidayNote) { %>
-                <div class="text-xs text-gold-500 mt-1"><%= store.holidayNote %></div>
+                <span class="text-ink-900/40 italic">Hours not yet available</span>
               <% } %>
             </div>
           </div>
