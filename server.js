@@ -287,12 +287,9 @@ app.get("/category/:slug", async (req, res) => {
   res.render("category", { category, products, search: search || "", sort: sort || "" });
 });
 
-app.get("/categories", (req, res) => {
-  res.render("categories");
-});
-
-app.get("/categories", (req, res) => {
-  res.render("categories");
+app.get("/categories", async (req, res) => {
+  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
+  res.render("categories", { categories });
 });
 
 app.get("/conditions", async (req, res) => {
