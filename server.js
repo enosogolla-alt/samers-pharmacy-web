@@ -32,16 +32,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
-const productUploadDir = path.join(__dirname, "public", "uploads", "products");
-if (!fs.existsSync(productUploadDir)) fs.mkdirSync(productUploadDir, { recursive: true });
-
-const productStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, productUploadDir),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-});
-const uploadProductImage = multer({ storage: productStorage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max — still used by blog routes until Piece 3
-
-// Memory storage for product images: buffer goes straight to R2, never touches local disk.
+// Memory storage for product and blog images: buffer goes straight to R2, never touches local disk.
 const uploadProductImageR2 = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB max
 const { uploadPublicFile } = require("./lib/r2.js");
 
@@ -395,10 +386,12 @@ app.get("/admin/blog/new", requireAdmin, async (req, res) => {
   res.render("admin/blog-form", { post: null });
 });
 
-app.post("/admin/blog", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+app.post("/admin/blog", requireAdmin, uploadProductImageR2.single("image"), async (req, res) => {
   const { title, excerpt, body } = req.body;
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  const imageUrl = req.file ? `/uploads/products/${req.file.filename}` : null;
+  const imageUrl = req.file
+    ? await uploadPublicFile(req.file.buffer, req.file.originalname, req.file.mimetype)
+    : null;
 
   await prisma.blogPost.create({
     data: { title, slug, excerpt: excerpt || null, body, imageUrl },
@@ -413,11 +406,11 @@ app.get("/admin/blog/:id/edit", requireAdmin, async (req, res) => {
   res.render("admin/blog-form", { post });
 });
 
-app.post("/admin/blog/:id/edit", requireAdmin, uploadProductImage.single("image"), async (req, res) => {
+app.post("/admin/blog/:id/edit", requireAdmin, uploadProductImageR2.single("image"), async (req, res) => {
   const { title, excerpt, body } = req.body;
   const updateData = { title, excerpt: excerpt || null, body };
   if (req.file) {
-    updateData.imageUrl = `/uploads/products/${req.file.filename}`;
+    updateData.imageUrl = await uploadPublicFile(req.file.buffer, req.file.originalname, req.file.mimetype);
   }
 
   await prisma.blogPost.update({
