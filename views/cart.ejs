@@ -1,18 +1,18 @@
 <%- include('partials/header') %> <%- include('partials/navbar') %>
 
-<section class="max-w-7xl mx-auto px-6 pt-8">
-  <nav class="text-sm text-ink-900/50 mb-4">
+<section class="max-w-7xl mx-auto px-5 md:px-6 pt-6 md:pt-8" x-data="{ count: 0 }" x-init="count = getCart().reduce((sum, i) => sum + i.qty, 0)">
+  <nav class="text-sm text-ink-900/50 mb-3 md:mb-4">
     <a href="/" class="hover:text-forest-700">Home</a>
     <span class="mx-1">&rsaquo;</span> <span class="text-ink-900">Cart</span>
   </nav>
-  <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink-900 mb-2">
+  <h1 class="font-display text-xl md:text-4xl font-semibold text-ink-900 mb-1 md:mb-2">
     Your Cart
   </h1>
-  <p class="text-ink-900/60 mb-8">3 items in your cart</p>
+  <p class="text-ink-900/60 mb-5 md:mb-8 text-sm md:text-base" x-text="count + (count === 1 ? ' item in your cart' : ' items in your cart')"></p>
 </section>
 
 <section
-  class="max-w-7xl mx-auto px-6 pb-16 grid md:grid-cols-[1fr_360px] gap-10 items-start"
+  class="max-w-7xl mx-auto px-5 md:px-6 pb-8 md:pb-16 grid md:grid-cols-[1fr_360px] gap-4 md:gap-10 items-start"
 >
   <!-- Cart Items -->
   <div
@@ -26,63 +26,65 @@
   >
     <template x-for="item in items" :key="item.id">
       <div
-        class="bg-white border border-mint-200 rounded-2xl p-4 flex gap-4 items-center"
+        class="bg-white md:border md:border-mint-200 shadow-sm md:shadow-none rounded-2xl p-3 md:p-4 flex gap-3 md:gap-4 items-center"
       >
-        <div class="rounded-xl w-20 h-20 shrink-0 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
+        <div class="rounded-xl w-16 h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">
           <template x-if="item.imageUrl">
             <img :src="item.imageUrl" class="w-full h-full object-contain p-2">
           </template>
           <template x-if="!item.imageUrl">
-            <svg class="w-8 h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+            <svg class="w-7 h-7 md:w-8 md:h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
           </template>
         </div>
 
         <div class="flex-1 min-w-0">
-          <p class="font-medium text-ink-900 truncate" x-text="item.name"></p>
-          <p class="text-xs text-ink-900/50 mb-2" x-text="item.variant"></p>
+          <p class="text-sm md:text-base font-medium text-ink-900 truncate" x-text="item.name"></p>
+          <p class="text-xs text-ink-900/50 mb-1.5 md:mb-2" x-text="item.variant"></p>
           <span
-            class="text-gold-500 font-bold"
+            class="text-sm md:text-base text-gold-500 font-bold"
             x-text="'KSh ' + item.price.toLocaleString()"
           ></span>
         </div>
 
-        <div class="flex items-center border border-mint-200 rounded-capsule">
+        <div class="flex flex-col md:flex-row items-end md:items-center gap-2 md:gap-4">
+          <div class="flex items-center border border-mint-200 rounded-capsule">
+            <button
+              @click="updateQty(item.id, item.qty - 1)"
+              class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
+            >
+              &minus;
+            </button>
+            <span
+              x-text="item.qty"
+              class="w-6 text-center text-sm font-medium"
+            ></span>
+            <button
+              @click="updateQty(item.id, item.qty + 1)"
+              class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
+            >
+              +
+            </button>
+          </div>
+
           <button
-            @click="updateQty(item.id, item.qty - 1)"
-            class="w-8 h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
+            @click="remove(item.id)"
+            class="p-1.5 md:p-2 text-ink-900/30 hover:text-coral-500 transition-colors"
           >
-            &minus;
-          </button>
-          <span
-            x-text="item.qty"
-            class="w-6 text-center text-sm font-medium"
-          ></span>
-          <button
-            @click="updateQty(item.id, item.qty + 1)"
-            class="w-8 h-8 flex items-center justify-center text-ink-900/60 hover:text-forest-700"
-          >
-            +
+            <svg
+              class="w-4 h-4 md:w-5 md:h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+              />
+            </svg>
           </button>
         </div>
-
-        <button
-          @click="remove(item.id)"
-          class="p-2 text-ink-900/30 hover:text-coral-500 transition-colors"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.8"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
       </div>
     </template>
 
@@ -97,8 +99,8 @@
   </div>
 
   <!-- Order Summary -->
-  <div class="bg-white border border-mint-200 rounded-2xl p-6 sticky top-24">
-    <h2 class="font-display text-xl font-semibold text-ink-900 mb-5">
+  <div class="bg-white shadow-xl md:shadow-none md:border md:border-mint-200 rounded-3xl md:rounded-2xl p-5 md:p-6 md:sticky md:top-24">
+    <h2 class="font-display text-base md:text-xl font-semibold text-ink-900 mb-4 md:mb-5">
       Order Summary
     </h2>
 
@@ -115,19 +117,6 @@
         <span>Delivery</span>
         <span class="text-forest-700 font-medium">Calculated at checkout</span>
       </div>
-    </div>
-
-    <div class="flex gap-2 mb-5">
-      <input
-        type="text"
-        placeholder="Promo code"
-        class="flex-1 px-4 py-2.5 rounded-xl border border-mint-200 text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20"
-      />
-      <button
-        class="px-4 py-2.5 rounded-xl bg-mint-50 text-forest-700 text-sm font-semibold hover:bg-mint-200 transition-colors"
-      >
-        Apply
-      </button>
     </div>
 
     <div
