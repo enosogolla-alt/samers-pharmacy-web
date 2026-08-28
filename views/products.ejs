@@ -14,10 +14,10 @@
     <p class="text-ink-900/60 max-w-xl">Browse our complete range of medications, health supplements, and wellness products.</p>
   </section>
 
-  <section class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-[240px_1fr] gap-10">
+  <section class="max-w-7xl mx-auto px-5 md:px-6 py-6 md:py-10 grid md:grid-cols-[240px_1fr] gap-5 md:gap-10">
 
-    <!-- Sidebar -->
-    <aside>
+    <!-- Sidebar (desktop) -->
+    <aside class="hidden md:block">
       <h3 class="font-semibold text-ink-900 mb-3">Search</h3>
       <form action="/products" method="GET" class="relative mb-8">
         <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-900/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -45,7 +45,28 @@
     </aside>
 
     <!-- Product Grid/List -->
-    <div>
+    <div class="min-w-0">
+      <!-- Mobile: search + horizontal filter chips -->
+      <div class="md:hidden mb-4">
+        <form action="/products" method="GET" class="relative mb-4">
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-900/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" name="search" value="<%= search %>" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-mint-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-forest-700/20">
+        </form>
+        <div class="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5" style="scrollbar-width: none;">
+          <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
+            class="shrink-0 px-4 py-2 rounded-capsule text-xs font-semibold transition-colors <%= !activeCategorySlug ? 'bg-forest-700 text-white' : 'bg-white text-ink-900 border border-mint-200' %>">
+            All
+          </a>
+          <% categories.forEach(function(c) { %>
+            <% const catUrlM = '/products?category=' + encodeURIComponent(c.slug) + (search ? '&search=' + encodeURIComponent(search) : ''); %>
+            <a href="<%= catUrlM %>"
+              class="shrink-0 px-4 py-2 rounded-capsule text-xs font-semibold whitespace-nowrap transition-colors <%= activeCategorySlug === c.slug ? 'bg-forest-700 text-white' : 'bg-white text-ink-900 border border-mint-200' %>">
+              <%= c.name %>
+            </a>
+          <% }); %>
+        </div>
+      </div>
+
       <% if (search) { %>
         <p class="text-sm text-ink-900/70 mb-4">
           Showing results for "<span class="font-semibold text-ink-900"><%= search %></span>"
@@ -53,11 +74,11 @@
         </p>
       <% } %>
 
-      <div class="flex items-center justify-between mb-6">
-        <p class="text-sm text-ink-900/60"><%= products.length %> products</p>
-        <div class="flex items-center gap-3">
+      <div class="flex items-center justify-between mb-4 md:mb-6">
+        <p class="text-xs md:text-sm text-ink-900/60"><%= products.length %> products</p>
+        <div class="flex items-center gap-2 md:gap-3">
           <select
-            class="text-sm border border-mint-200 rounded-xl px-3 py-2 focus:outline-none"
+            class="text-xs md:text-sm border border-mint-200 rounded-xl px-2.5 md:px-3 py-1.5 md:py-2 focus:outline-none"
             @change="
               const url = new URL(window.location);
               if ($event.target.value) { url.searchParams.set('sort', $event.target.value); }
@@ -71,18 +92,46 @@
             <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name: A-Z</option>
           </select>
           <div class="flex border border-mint-200 rounded-xl overflow-hidden">
-            <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+            <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2 md:p-2.5">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h6v6H4V6zm0 8h6v6H4v-6zm10-8h6v6h-6V6zm0 8h6v6h-6v-6z"/></svg>
             </button>
-            <button @click="view = 'list'" :class="view === 'list' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2.5">
+            <button @click="view = 'list'" :class="view === 'list' ? 'bg-forest-700 text-white' : 'text-ink-900/50'" class="p-2 md:p-2.5">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Grid view -->
-     <div x-show="view === 'grid'" class="grid grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Grid view: mobile compact cards -->
+      <div x-show="view === 'grid'" class="md:hidden grid grid-cols-2 gap-3">
+        <% products.forEach(function(p) { %>
+          <a href="/product/<%= p.slug %>" class="bg-white rounded-2xl p-3 shadow-sm flex flex-col">
+            <div class="relative rounded-xl h-[108px] mb-2.5 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F0FA 100%);">
+              <% if (p.discountLabel) { %><span class="absolute top-2 left-2 px-2 py-0.5 rounded-capsule bg-coral-500 text-white text-[9px] font-bold"><%= p.discountLabel %></span><% } %>
+              <% if (p.imageUrl) { %>
+                <img src="<%= p.imageUrl %>" alt="<%= p.name %>" class="w-full h-full object-contain p-3">
+              <% } else { %>
+                <svg class="w-8 h-8 text-mint-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M3.75 5.25h6.5v6.5h-6.5v-6.5z"/></svg>
+              <% } %>
+            </div>
+            <span class="text-[10px] font-semibold text-forest-700 mb-0.5"><%= p.category ? p.category.name : 'Uncategorized' %></span>
+            <p class="text-xs font-medium text-ink-900 mb-2 leading-snug flex-1"><%= p.name %></p>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-gold-500 whitespace-nowrap">KSh <%= p.price.toLocaleString() %></span>
+              <button
+                @click.stop.prevent="addToCart({ id: '<%= p.id %>', name: '<%= p.name.replace(/'/g, "\\'") %>', price: <%= p.price %>, imageUrl: '<%= p.imageUrl || '' %>', qty: 1 })"
+                aria-label="Add to cart"
+                class="w-7 h-7 rounded-lg bg-forest-700 hover:bg-ink-900 transition-colors flex items-center justify-center shrink-0"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              </button>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+
+      <!-- Grid view: desktop -->
+     <div x-show="view === 'grid'" class="hidden md:grid lg:grid-cols-3 gap-5">
         <% products.forEach(function(p) { %>
           <a href="/product/<%= p.slug %>" class="bg-white border border-mint-200 rounded-2xl p-4 hover:shadow-lg transition-shadow flex flex-col">
             <div class="relative rounded-xl h-40 mb-4 flex items-center justify-center overflow-hidden" style="background: radial-gradient(circle at 50% 40%, #ffffff 0%, #F3F8F5 65%, #E9F7F2 100%);">

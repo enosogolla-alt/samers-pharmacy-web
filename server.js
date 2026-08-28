@@ -143,9 +143,11 @@ app.get("/", async (req, res) => {
   const categories = await prisma.category.findMany();
   const featuredProducts = await prisma.product.findMany({
     where: { featured: true },
+    include: { category: true },
   });
   const offers = await prisma.product.findMany({
     where: { oldPrice: { not: null } },
+    include: { category: true },
   });
   const latestPosts = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },
